@@ -1,21 +1,21 @@
 {
-  "name": "unknown-lang",
+  "name": "cassidy",
   "version": "1.0.0",
-  "description": "No name language",
+  "description": "Language with high precision for the web",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nguyenphuminh/unknown-lang.git"
+    "url": "git+https://github.com/cassidylang/cassidy.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nguyenphuminh/unknown-lang/issues"
+    "url": "https://github.com/nguyenphuminh/cassidylang/issues"
   },
-  "homepage": "https://github.com/nguyenphuminh/unknown-lang#readme",
+  "homepage": "https://github.com/nguyenphuminh/cassidylang#readme",
   "devDependencies": {
     "fs": "0.0.1-security",
     "typescript": "^4.2.3"
