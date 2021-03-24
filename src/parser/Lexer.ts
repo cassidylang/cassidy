@@ -3,19 +3,28 @@ class Lexer {
     public static parseList(str: string) {
         let tokenArray: Array<string>, strlist=str.split(''), token = '', tokenIndex = 0, inString = false, inTemplate = false;
         strlist.forEach(e => {
+            let endIndex = 0;
+            let startIndex = 0;
+            let endTIndex = 0;
+            let startTIndex = 0;
             if (List.List.find(el => el.keyword === token)) {
                 tokenArray.push(token);
                 tokenIndex+=1;
                 token='';
             } else if (token === '\'' || token === '\"') {
                 token+=e;
-                tokenIndex+=1;
+                tokenIndex+=1
                 inString = !inString ? true : false;
+                if (!inString) endIndex=tokenIndex; else startIndex=tokenIndex;
             } else if (token === '\`') {
                 token+=e;
                 tokenIndex+=1;
                 inTemplate = !inTemplate ? true : false;
+                if (!inTemplate) endTIndex=tokenIndex; else startTIndex=tokenIndex;
             } else token+=e;
         });
+    }
+    produceStringPair(StartIndex: number, EndIndex: number) {
+        return `${StartIndex}-${EndIndex}`;
     }
 }

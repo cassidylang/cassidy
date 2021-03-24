@@ -27,3 +27,14 @@ class VariableFlag {
         return type;
     }
 }
+class FlagController {
+    constructor() {}
+    public static produceMemoryFlag(flag: VariableFlag) {
+
+    }
+    typeToString(type: Type) {
+        switch(type) {
+            
+        }
+    }
+}
