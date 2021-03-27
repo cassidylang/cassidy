@@ -3,12 +3,15 @@ class Lexer {
     public static tokenArray: Array<string>;
     public static stringPosition: Array<number>;
     public static parseList(str: string) {
-        let strlist=str.split(''), token = '', tokenIndex = 0, inString = false, inTemplate = false;
+        let strlist=str.split('')
+        , token = '', tokenIndex = 0
+        , inString = false
+        , inTemplate = false;
         strlist.forEach(e => {
-            let endIndex = 0;
-            let startIndex = 0;
-            let endTIndex = 0;
-            let startTIndex = 0;
+            let endIndex = 0
+            , startIndex = 0
+            , endTIndex = 0
+            , startTIndex = 0;
             if (List.List.find(el => el.keyword === token)) {
                 Lexer.tokenArray.push(token);
                 tokenIndex+=1;
