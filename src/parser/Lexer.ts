@@ -1,14 +1,16 @@
 class Lexer {
     constructor() {};
+    public static tokenArray: Array<string>;
+    public static stringPosition: Array<number>;
     public static parseList(str: string) {
-        let tokenArray: Array<string>, strlist=str.split(''), token = '', tokenIndex = 0, inString = false, inTemplate = false;
+        let strlist=str.split(''), token = '', tokenIndex = 0, inString = false, inTemplate = false;
         strlist.forEach(e => {
             let endIndex = 0;
             let startIndex = 0;
             let endTIndex = 0;
             let startTIndex = 0;
             if (List.List.find(el => el.keyword === token)) {
-                tokenArray.push(token);
+                Lexer.tokenArray.push(token);
                 tokenIndex+=1;
                 token='';
             } else if (token === '\'' || token === '\"') {
@@ -26,5 +28,11 @@ class Lexer {
     }
     produceStringPair(StartIndex: number, EndIndex: number) {
         return `${StartIndex}-${EndIndex}`;
+    }
+    public static produceStringGroups(stringPair: string) {
+        let arr = stringPair.split('-')
+        , start = parseInt(arr[0])
+        , end = parseInt(arr[2])
+        , output : Array<number>;
     }
 }

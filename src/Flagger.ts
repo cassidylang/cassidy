@@ -30,11 +30,13 @@ class VariableFlag {
 class FlagController {
     constructor() {}
     public static produceMemoryFlag(flag: VariableFlag) {
-
+        return JSON.stringify({ mem: [flag.varname, flag.vartype, flag.value] })
     }
-    typeToString(type: Type) {
+    public static typeToString(type: Type): string {
         switch(type) {
-            
+            case Type.string:
+                return 'string'
         }
+        return 'null';
     }
 }
