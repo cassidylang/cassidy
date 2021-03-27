@@ -1,4 +1,4 @@
-export let CMath = {
+export const CMath = {
     even: num => num % 2 == 0,
     odd: num => num % 2 != 0,
     prime: num => {
@@ -57,5 +57,5 @@ export let CMath = {
 	    }
     	return res;
     },
-    sqr: (num) => Math.pow(num, 2),
+    sqr: num => Math.pow(num, 2),
 }
