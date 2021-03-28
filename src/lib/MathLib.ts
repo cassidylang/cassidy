@@ -2,7 +2,7 @@ export const CMath = {
     even: (num: number) => num % 2 == 0,
     odd: (num: number) => num % 2 != 0,
     prime: (num: number) => {
-        for (let i=2;i<num;i++){
+        for (let i=2;i<=Math.ceil(num/2);i++){
             if (num % i == 0){
                 return false;
             }
@@ -58,4 +58,7 @@ export const CMath = {
     	return res;
     },
     sqr: (num: number) => Math.pow(num, 2),
+	tau: Math.PI*2,
+	root: (num: number, rootLevel: number) => Math.pow(num, 1/rootLevel),
+	hypotenuse: (a: number, b: number) => Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))
 }
