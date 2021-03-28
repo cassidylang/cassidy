@@ -60,5 +60,14 @@ export const CMath = {
     sqr: (num: number) => Math.pow(num, 2),
 	tau: Math.PI*2,
 	root: (num: number, rootLevel: number) => Math.pow(num, 1/rootLevel),
-	hypotenuse: (a: number, b: number) => Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))
+	hypotenuse: (a: number, b: number) => Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)),
+	factorial: (n: number) => {
+		let x=1;
+		for (let i=1; i<=n; i++) x*=i;
+		return x;
+	},
+	binomial: (p:number, n:number, k:number) => {
+		let nk = CMath.factorial(n)/CMath.factorial(k)*CMath.factorial(n-k);
+		return nk*Math.pow(p, k)*Math.pow(1-p, n-k);
+	},
 }
