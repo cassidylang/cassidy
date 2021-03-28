@@ -36,6 +36,8 @@ class Lexer {
         let arr = stringPair.split('-')
         , start = parseInt(arr[0])
         , end = parseInt(arr[2])
-        , output : Array<number>;
+        , output : Array<number> = [];
+        for (let i=start; i<=end; i++) output.push(i);
+        return output;
     }
 }

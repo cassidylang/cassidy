@@ -1,5 +1,5 @@
 export const CArray = {
-    sum: arr => arr.reduce((a, b) => a + b),
-    max: arr => Math.max.apply(arr),
-    min: arr => Math.min.apply(arr),
+    sum: (arr: Array<any>) => arr.reduce((a, b) => a + b),
+    max: (arr: Array<any>) => Math.max.apply(arr),
+    min: (arr: Array<any>) => Math.min.apply(arr),
 }

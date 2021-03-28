@@ -1,11 +1,11 @@
 enum Type {
-    num,
-    bool,
-    string,
-    string_array,
-    num_array,
-    bool_array,
-    null
+    'num',
+    'bool',
+    'string',
+    'string_array',
+    'num_array',
+    'bool_array',
+    'null'
 }
 class VariableFlag {
     constructor(
@@ -49,12 +49,5 @@ class FlagController {
     constructor() {}
     public static produceMemoryFlag(flag: VariableFlag) {
         return JSON.stringify({ mem: [flag.varname, flag.vartype, flag.value] })
-    }
-    public static typeToString(type: Type): string {
-        switch(type) {
-            case Type.string:
-                return 'string'
-        }
-        return 'null';
     }
 }

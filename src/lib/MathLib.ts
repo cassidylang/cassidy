@@ -1,7 +1,7 @@
 export const CMath = {
-    even: num => num % 2 == 0,
-    odd: num => num % 2 != 0,
-    prime: num => {
+    even: (num: number) => num % 2 == 0,
+    odd: (num: number) => num % 2 != 0,
+    prime: (num: number) => {
         for (let i=2;i<num;i++){
             if (num % i == 0){
                 return false;
@@ -9,7 +9,7 @@ export const CMath = {
         }
         return true;
     },
-    findPrimeNum: (a, b) => {
+    findPrimeNum: (a: number, b: number) => {
         let arr=[], check;
 	    for (let i=a;i<=b;i++){
 		    check=true;
@@ -24,7 +24,7 @@ export const CMath = {
         }
 	    return arr;
     },
-    perfect: num => {
+    perfect: (num: number) => {
         let sum=0;
 	    for (let i=1;i<num;i++){
 		    if (num % i == 0 && num != i){
@@ -37,7 +37,7 @@ export const CMath = {
 		    return false;
 	    }
     },
-    gcd: (a, b) => {
+    gcd: (a: number, b: number) => {
         let res=1;
 	    for (let i=1;i<=a;i++){
 		    if (a % i == 0 && b % i == 0){
@@ -46,7 +46,7 @@ export const CMath = {
 	    }
 	    return res;
     },
-    lcm: (a, b) => {
+    lcm: (a: number, b: number) => {
         let res=0, k=1;
 	    while (true){
 	    	if (k % a == 0 && k % b == 0){
@@ -57,5 +57,5 @@ export const CMath = {
 	    }
     	return res;
     },
-    sqr: num => Math.pow(num, 2),
+    sqr: (num: number) => Math.pow(num, 2),
 }
