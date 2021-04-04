@@ -1,5 +1,11 @@
-class Lexer {
+import { METHODS } from 'node:http';
+import * as li from '../parser/Keyword';
+export class Lexer {
     constructor() {};
+    public static methodDec: Array<string> = [
+        'void',
+        'bool',
+    ];
     public static tokenArray: Array<string>;
     public static stringPosition: Array<number>;
     public static parseList(str: string) {
@@ -12,21 +18,24 @@ class Lexer {
             , startIndex = 0
             , endTIndex = 0
             , startTIndex = 0;
-            if (List.List.find(el => el.keyword === token)) {
-                Lexer.tokenArray.push(token);
-                tokenIndex+=1;
-                token='';
-            } else if (token === '\'' || token === '\"') {
+            if ((token === '\'' || token === '\"') && (this.tokenArray[tokenIndex-1]!=='\\')) {
                 token+=e;
                 tokenIndex+=1
                 inString = !inString ? true : false;
                 if (!inString) endIndex=tokenIndex; else startIndex=tokenIndex;
-            } else if (token === '\`') {
+            } else if (token === '\`' && this.tokenArray[tokenIndex-1]!=='\\') {
                 token+=e;
                 tokenIndex+=1;
                 inTemplate = !inTemplate ? true : false;
                 if (!inTemplate) endTIndex=tokenIndex; else startTIndex=tokenIndex;
+            } else if (li.List.List.find(el => el.keyword === token)&&!Lexer.methodDec.find(e=>e===token)) {
+                Lexer.tokenArray.push(token);
+                tokenIndex+=1;
+                token='';
+            } else if (this.tokenArray[tokenIndex-1]==='(') {
+                
             } else token+=e;
+
         });
     }
     produceStringPair(StartIndex: number, EndIndex: number) {
@@ -36,8 +45,6 @@ class Lexer {
         let arr = stringPair.split('-')
         , start = parseInt(arr[0])
         , end = parseInt(arr[2])
-        , output : Array<number> = [];
-        for (let i=start; i<=end; i++) output.push(i);
-        return output;
+        for (let i=start; i<=end; i++) this.stringPosition.push(i);
     }
 }

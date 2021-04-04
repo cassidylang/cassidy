@@ -1,7 +1,8 @@
+import * as l from '../parser/Lexer';
 class Parser {
     constructor() {}
     public static processVariable() {
-        Lexer.tokenArray.forEach(function (e) {
+        l.Lexer.tokenArray.forEach(function (e) {
             
         })
     }

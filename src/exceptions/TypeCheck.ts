@@ -1,5 +1,3 @@
-import { constants } from "buffer";
-
 export class TypeCheck {
     constructor() {}
     public static check(base: Type, req: Type, line: number) {

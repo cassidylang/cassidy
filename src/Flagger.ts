@@ -2,16 +2,18 @@ enum Type {
     'num',
     'bool',
     'string',
-    'string_array',
-    'num_array',
-    'bool_array',
     'null'
+}
+enum SType {
+    'array',
+    'method'
 }
 class VariableFlag {
     constructor(
         public varname: string,
         public vartype: Type,
         public value: any,
+        public secondaryType?: SType,
     ) {
         this.vartype = vartype || VariableFlag.getType(value);
     }
@@ -29,15 +31,6 @@ class VariableFlag {
                 break;
             case 'null':
                 type = Type.null;
-                break;
-            case 'string_array':
-                type = Type.string_array;
-                break;
-            case 'num_array':
-                type = Type.num_array;
-                break;
-            case 'bool_array':
-                type = Type.bool_array;
                 break;
             default:
                 break;
