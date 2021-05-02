@@ -41,4 +41,11 @@ class Compiler {
             });
         }
     }
+    public static bracketTree(pname: string, ptype: string, startln: number, endln: number) {
+        const startingToken: string = "{";
+        const endingToken: string = "}";
+        switch(pname) {
+            
+        }
+    }
 }

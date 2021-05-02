@@ -28,12 +28,12 @@ export class Lexer {
                 tokenIndex+=1;
                 inTemplate = !inTemplate ? true : false;
                 if (!inTemplate) endTIndex=tokenIndex; else startTIndex=tokenIndex;
+            } else if (this.tokenArray[tokenIndex-1]==='(') {
+                token+=e;
             } else if (li.List.List.find(el => el.keyword === token)&&!Lexer.methodDec.find(e=>e===token)) {
                 Lexer.tokenArray.push(token);
                 tokenIndex+=1;
                 token='';
-            } else if (this.tokenArray[tokenIndex-1]==='(') {
-                
             } else token+=e;
 
         });
