@@ -9,11 +9,13 @@ class Keyword {
 export class List {
     public static List = [
         new Keyword('using', ' '),
+        new Keyword('immutable', 'const'),
         new Keyword('import', 'import'),
         new Keyword('new', 'new'),
         new Keyword('this', 'this'),
         new Keyword('void', 'function'),
-        new Keyword('num', 'let'),
+        new Keyword('int', 'let'),
+        new Keyword('float', 'let'),
         new Keyword('string', 'let'),
         new Keyword('for', 'for'),
         new Keyword('while', 'while'),

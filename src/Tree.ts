@@ -50,7 +50,7 @@ class Helper {
                 if (f_body.namespace !== undefined) {
                     output=f_body.namespace?.find(e => e === f_target);
                 } else if (f_body.namespace === undefined || output === undefined) {
-                    console.error(`SearchError : cannot find ${f_target.nodeName} within ${f_body.nodeName}.`);
+                    console.error(`SearchError : cannot find ${f_target.nodeName} within ${f_body.nodeName}.0`);
                 }
                 break;
         }
