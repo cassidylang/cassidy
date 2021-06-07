@@ -48,4 +48,8 @@ class Compiler {
             
         }
     }
+    
+    public static processModulo(pos: number) {
+        let a:number, b:number
+    }
 }

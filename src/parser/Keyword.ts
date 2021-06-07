@@ -81,7 +81,7 @@ export class List {
         new Keyword('-', '-'),
         new Keyword('*', '*'),
         new Keyword('/', '/'),
-        new Keyword('%', '%'),
+        new Keyword('%', ''),
         new Keyword('||', '||'),
         new Keyword('|', '|'),
         new Keyword('&&', '&&'),
@@ -112,6 +112,6 @@ export class List {
         new Keyword('7', '7'),
         new Keyword('8', '8'),
         new Keyword('9', '9'),
-        new Keyword(' ', ' '),
+        //new Keyword(' ', ' '),
     ];
 }
