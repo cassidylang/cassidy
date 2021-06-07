@@ -18,19 +18,19 @@ export class Lexer {
             , startIndex = 0
             , endTIndex = 0
             , startTIndex = 0;
-            if ((token === '\'' || token === '\"') && (this.tokenArray[tokenIndex-1]!=='\\')) {
+            if ((token === '\'' || token === '\"') && (this.tokenArray[tokenIndex-1] !== '\\')) {
                 token+=e;
                 tokenIndex+=1
                 inString = !inString ? true : false;
                 if (!inString) endIndex=tokenIndex; else startIndex=tokenIndex;
-            } else if (token === '\`' && this.tokenArray[tokenIndex-1]!=='\\') {
+            } else if (token === '\`' && this.tokenArray[tokenIndex-1] !== '\\') {
                 token+=e;
                 tokenIndex+=1;
                 inTemplate = !inTemplate ? true : false;
                 if (!inTemplate) endTIndex=tokenIndex; else startTIndex=tokenIndex;
-            } else if (this.tokenArray[tokenIndex-1]==='(') {
+            } else if (this.tokenArray[tokenIndex-1] === '(') {
                 token+=e;
-            } else if (li.List.List.find(el => el.keyword === token)&&!Lexer.methodDec.find(e=>e===token)) {
+            } else if (li.List.List.find(el => el.keyword === token) && !Lexer.methodDec.find(e=>e === token)) {
                 Lexer.tokenArray.push(token);
                 tokenIndex+=1;
                 token='';
