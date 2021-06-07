@@ -7,8 +7,7 @@ enum Err {
 }
 class Constants {
     public static processDebuggerMessage(err: Err, line: number, base?: Type, req?: Type) {
-        let arg = ''
-        , str =  `${Err}Error : Line ${line}. ${arg}`
+        let arg = '', str = `${Err}Error : Line ${line}. ${arg}`
         switch (err) {
             case Err.Type:
                 arg = `Expected ${req}, got ${base}`

@@ -10,7 +10,7 @@ const basePath: string = './lib';
 class Compiler {
     constructor() {}
     public static produceBuiltInMethod() {
-        l.Lexer.tokenArray.forEach(function (e) {
+        l.Lexer.tokenArray.forEach(e => {
             let token = li.List.List.findIndex(el=>el.keyword = 'using');
             if (e===li.List.List.find(el=>el.keyword==='using')?.keyword) Compiler.evalLib(li.List.List[token].keyword, 1,['']);
         });

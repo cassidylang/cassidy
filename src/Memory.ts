@@ -2,13 +2,13 @@ import * as fs from 'fs';
 export class Memory {
     constructor() {}
     public static addToMem(str: string) {
-        fs.appendFile('mem.txt', str,  (err) => {
+        fs.appendFile('mem.txt', str, err => {
             if (err) throw err;
             console.log('Variable data and flags pushed to memory');
           });
     }
     public static removeMem(str: string) {
-        fs.unlink('mem.txt', (err) => {
+        fs.unlink('mem.txt', err => {
             if (err) throw err;
             console.log('Memory cleared');
           });
