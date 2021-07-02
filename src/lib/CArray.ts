@@ -15,7 +15,7 @@ export const CArray = {
     sort: (arr: Array<number>) => {
         function quicksort(array: number[], left: number, right: number) {
             if (left >= right) {
-                return
+                return;
             }
             const pivot = array[Math.floor((left + right) / 2)]
             const index = partition(array, left, right, pivot)

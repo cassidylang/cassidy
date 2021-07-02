@@ -6,7 +6,13 @@ export class Lexer {
         'void',
         'bool',
     ];
+    /**
+     * Array of tokens
+     */
     public static tokenArray: Array<string>;
+    /**
+     * Array of string groups, so the compiler doesn't mistake them for variable/method/etc
+     */
     public static stringPosition: Array<number>;
     public static parseList(str: string) {
         let strlist=str.split('')
@@ -18,6 +24,10 @@ export class Lexer {
             , startIndex = 0
             , endTIndex = 0
             , startTIndex = 0;
+            /**
+             * If string found, continue parsing instead of tokenize
+             * If string ending found, tokenize the full string object and move to the next token
+             */
             if ((token === '\'' || token === '\"') && (this.tokenArray[tokenIndex-1] !== '\\')) {
                 token+=e;
                 tokenIndex+=1
@@ -38,9 +48,15 @@ export class Lexer {
 
         });
     }
+    /**
+     * Produce string pairs for storage in @stringPosition
+     */
     produceStringPair(StartIndex: number, EndIndex: number) {
         return `${StartIndex}-${EndIndex}`;
     }
+    /**
+     * Turning string pairs into number group readable by the parser/compiler
+     */
     public static produceStringGroups(stringPair: string) {
         let arr = stringPair.split('-')
         , start = parseInt(arr[0])

@@ -6,6 +6,9 @@ enum Err {
     'Overflow'
 }
 class Constants {
+    /**
+     * Bug Report => Bug Message
+     */
     public static processDebuggerMessage(err: Err, line: number, base?: Type, req?: Type) {
         let arg = '', str = `${Err}Error : Line ${line}. ${arg}`
         switch (err) {

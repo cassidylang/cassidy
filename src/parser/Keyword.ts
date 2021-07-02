@@ -7,6 +7,9 @@ class Keyword {
     }
 }
 export class List {
+    /**
+     * A list of possible keywords
+     */
     public static List = [
         new Keyword('using', ' '),
         new Keyword('immutable', 'const'),

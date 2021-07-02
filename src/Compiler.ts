@@ -9,12 +9,18 @@ const builtinpath: string[] = [
 const basePath: string = './lib';
 class Compiler {
     constructor() {}
+    /**
+     * Import built-in library C# style
+     */
     public static produceBuiltInMethod() {
         l.Lexer.tokenArray.forEach(e => {
             let token = li.List.List.findIndex(el=>el.keyword = 'using');
             if (e===li.List.List.find(el=>el.keyword==='using')?.keyword) Compiler.evalLib(li.List.List[token].keyword, 1,['']);
         });
     }
+    /**
+     * Import Libraries
+     */
     public static evalLib(lib : string, filecount: number = 1, p_array: PathLike[]) {
         let rpath=basePath+lib;
         if (!builtinpath.find(e=>e===lib)) {
@@ -41,6 +47,9 @@ class Compiler {
             });
         }
     }
+    /**
+     * Produce bracket tree as a way to mark the start/end of a method
+     */
     public static bracketTree(pname: string, ptype: string, startln: number, endln: number) {
         const startingToken: string = "{";
         const endingToken: string = "}";
@@ -48,7 +57,9 @@ class Compiler {
             
         }
     }
-    
+    /**
+     * Process modulo operator
+     */
     public static processModulo(pos: number) {
         let a:number, b:number
     }

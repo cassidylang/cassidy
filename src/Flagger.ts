@@ -8,6 +8,9 @@ enum Type {
 enum SType {
     'array',
 }
+/**
+ * Produce flags to be injected into the type memory for typing support
+ */
 class VariableFlag {
     constructor(
         public varname: string,
