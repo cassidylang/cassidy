@@ -7,6 +7,9 @@ const builtinpath: string[] = [
     'CArray',
 ]
 const basePath: string = './lib';
+/**
+ * WARNING : Run through the debugger first before letting code into the compiler, or you'll get bad compile results
+ */
 class Compiler {
     constructor() {}
     /**
@@ -61,6 +64,7 @@ class Compiler {
      * Process modulo operator
      */
     public static processModulo(pos: number) {
-        let a:number, b:number
+        let a:number, b:number;
+
     }
 }
