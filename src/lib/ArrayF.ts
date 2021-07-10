@@ -1,9 +1,9 @@
-export const CArray = {
+export const ArrayF = {
     sum: (arr: Array<number>) => arr.reduce((a, b) => a + b),
     max: (arr: Array<number>) => Math.max.apply(arr),
     min: (arr: Array<number>) => Math.min.apply(arr),
     binarysearch: (Arr: Array<number>,value: number) =>{
-        let arr = CArray.sort(Arr),low = 0, high = arr.length - 1, mid;      
+        let arr = ArrayF.sort(Arr),low = 0, high = arr.length - 1, mid;      
         while (low <= high) {
             mid = Math.floor((low + high) / 2);     
             if (arr[mid] === value) return mid ; 
