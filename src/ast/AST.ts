@@ -1,5 +1,7 @@
-type varType = string | number | boolean | BigInt;
+type varType = string | number | boolean | BigInt | "interface";
 type accessModifier = "immutable" | "public" | "private" | "static" | "protected" | "abstract";
+type fixOperator = "++" | "--";
+type operator = "+=" | "-=" | "*=" | "/=" | fixOperator;
 
 interface Parameter {
     item: VariableDeclaration;
@@ -8,6 +10,42 @@ interface Parameter {
 
 interface Literal {
     value: varType;
+}
+
+class Variable {
+    constructor(identifier: string, accessModifier: accessModifier[], value: varType) {
+        this.identifier = identifier;
+        this.accessModifier = accessModifier;
+        this.value = value;
+    }
+    identifier: string;
+    accessModifier: accessModifier[];
+    value: varType = typeof undefined;
+    type: string = typeof this.value;
+}
+
+interface BinaryOperation {
+    left: Variable | BinaryExpression | BinaryOperation;
+    right: Variable | BinaryExpression | BinaryOperation;
+}
+
+interface Prefix {
+    variable: Variable;
+}
+
+interface Suffix {
+    variable: Variable;
+}
+
+interface BinaryExpression {
+    left: Variable;
+    right: Variable;
+}
+
+interface UpdateExpression {
+    variable: Variable;
+    operator: operator;
+    operatorValue?: varType;
 }
 
 interface ArrowFunction {
@@ -21,7 +59,6 @@ interface VariableAssignment {
     var2?: string;
     assignValue?: varType
 }
-
 class ASTNode {
     //Empty parent node type
     constructor(){}
@@ -39,14 +76,14 @@ class DataNode extends ASTNode {
     identifier: string;
 }
 
-class VariableDeclaration extends DataNode {
-    constructor(identifier: string, type: string, value: varType, accessModifier: accessModifier[], initializer: varType) {
-        super(identifier, type, accessModifier);
-        this.value = value;
-        this.initializer = initializer;
+class VariableDeclaration extends ASTNode {
+    constructor(left: Variable, right: Variable | varType | undefined | ArrowFunction) {
+        super();
+        this.left = left;
+        this.right = right;
     }
-    initializer: varType;
-    value: varType;
+    left: Variable;
+    right: Variable | varType | undefined | ArrowFunction;
 }
 
 class Body extends ASTNode {
@@ -54,7 +91,7 @@ class Body extends ASTNode {
         super();
         this.components = components;
     }
-    components: Array<DataNode>
+    components: Array<ASTNode>
 }
 
 class FunctionDeclaration extends DataNode {
@@ -65,4 +102,48 @@ class FunctionDeclaration extends DataNode {
     }
     params: Parameter[];
     body: Body;
+}
+
+class WhileStatement extends ASTNode {
+    constructor(binExpr: BinaryExpression, body: Body) {
+        super();
+        this.binExpr = binExpr;
+        this.body = body;
+    }
+    binExpr: BinaryExpression;
+    body: Body;
+}
+
+class ForStatement extends ASTNode {
+    constructor(varDec: VariableAssignment,binExpr: BinaryExpression,update: UpdateExpression, body: Body) {
+        super();
+        this.binExpr = binExpr;
+        this.varDec = varDec;
+        this.update = update;
+        this.body = body;
+    }
+    varDec: VariableAssignment;
+    binExpr: BinaryExpression;
+    update: UpdateExpression;
+    body: Body;
+}
+
+class IfStatement extends ASTNode {
+    constructor(binExpr: BinaryExpression, body: Body) {
+        super();
+        this.binExpr = binExpr;
+        this.body = body;
+    }
+    binExpr: BinaryExpression;
+    body: Body;
+}
+
+class FunctionCall extends ASTNode {
+    constructor(identifier: string, inputParam: varType) {
+        super();
+        this.identifier = identifier;
+        this.inputParam = inputParam;
+    }
+    identifier: string;
+    inputParam: varType;
 }
