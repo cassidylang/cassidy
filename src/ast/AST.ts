@@ -12,7 +12,7 @@ interface Literal {
     value: varType;
 }
 
-class Variable {
+export class Variable {
     constructor(identifier: string, accessModifier: accessModifier[], value: varType) {
         this.identifier = identifier;
         this.accessModifier = accessModifier;
@@ -59,12 +59,12 @@ interface VariableAssignment {
     var2?: string;
     assignValue?: varType
 }
-class ASTNode {
+export class ASTNode {
     //Empty parent node type
     constructor(){}
 }
 
-class DataNode extends ASTNode {
+export class DataNode extends ASTNode {
     constructor(identifier: string, type: string, accessModifier: accessModifier[]) {
         super();
         this.identifier = identifier;
@@ -76,7 +76,7 @@ class DataNode extends ASTNode {
     identifier: string;
 }
 
-class VariableDeclaration extends ASTNode {
+export class VariableDeclaration extends ASTNode {
     constructor(left: Variable, right: Variable | varType | undefined | ArrowFunction) {
         super();
         this.left = left;
@@ -86,7 +86,7 @@ class VariableDeclaration extends ASTNode {
     right: Variable | varType | undefined | ArrowFunction;
 }
 
-class Body extends ASTNode {
+export class Body extends ASTNode {
     constructor(components: Array<DataNode>) {
         super();
         this.components = components;
@@ -94,7 +94,7 @@ class Body extends ASTNode {
     components: Array<ASTNode>
 }
 
-class FunctionDeclaration extends DataNode {
+export class FunctionDeclaration extends DataNode {
     constructor(identifier: string, type: string, accessModifier: accessModifier[], params: Parameter[], body: Body) {
         super(identifier, type, accessModifier);
         this.params = params;
@@ -104,7 +104,7 @@ class FunctionDeclaration extends DataNode {
     body: Body;
 }
 
-class WhileStatement extends ASTNode {
+export class WhileStatement extends ASTNode {
     constructor(binExpr: BinaryExpression, body: Body) {
         super();
         this.binExpr = binExpr;
@@ -114,7 +114,7 @@ class WhileStatement extends ASTNode {
     body: Body;
 }
 
-class ForStatement extends ASTNode {
+export class ForStatement extends ASTNode {
     constructor(varDec: VariableAssignment,binExpr: BinaryExpression,update: UpdateExpression, body: Body) {
         super();
         this.binExpr = binExpr;
@@ -128,7 +128,7 @@ class ForStatement extends ASTNode {
     body: Body;
 }
 
-class IfStatement extends ASTNode {
+export class IfStatement extends ASTNode {
     constructor(binExpr: BinaryExpression, body: Body) {
         super();
         this.binExpr = binExpr;
@@ -138,7 +138,7 @@ class IfStatement extends ASTNode {
     body: Body;
 }
 
-class FunctionCall extends ASTNode {
+export class FunctionCall extends ASTNode {
     constructor(identifier: string, inputParam: varType) {
         super();
         this.identifier = identifier;
@@ -146,4 +146,12 @@ class FunctionCall extends ASTNode {
     }
     identifier: string;
     inputParam: varType;
+}
+
+export class BaseProgram extends ASTNode {
+    constructor(program: Body) {
+        super();
+        this.program = program;
+    }
+    program: Body;
 }

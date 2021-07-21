@@ -18,12 +18,6 @@ class Parser {
                     (tokens[index+i] === 'public' && isPublic !== true) ? isPublic = true : isPublic = false;
                 }
             }
-            /**
-             * Produce variable flags
-             */
-            if (tokens[index+2] === '=') {
-                Parser.variables.push(new VariableFlag(tokens[index+1], e, tokens[index+3],mutable, isStatic, undefined));
-            }
             index+=1;
         })
     }
