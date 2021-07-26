@@ -1,4 +1,3 @@
-import { Lexer } from "../parser/Lexer";
 import { BaseProgram, Variable } from "./AST";
 
 class BuildTree {

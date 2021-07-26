@@ -1,5 +1,3 @@
-import { createDeflateRaw } from "zlib";
-
 class Parser {
     constructor() {}
     tokens = Lexer.tokens;
@@ -8,6 +6,7 @@ class Parser {
      * Basic bundling. Zero string interpolation + template stuffs
      */
     preprocessor() {
+        let lookahead = (n:number) => this.tokens[n+1];
         for (let i = 0; i<this.tokens.length; i++) {
             if (this.tokens[i].type === TokenType.DOUBLE_QUOTE) {
                 let out = this.crawl(i, TokenType.DOUBLE_QUOTE);
@@ -29,6 +28,16 @@ class Parser {
                     case "if":
                         this.tokens[i] = {type:TokenType.IF};
                         break;
+                    case "else":
+                        if (lookahead(i).value === "if") {
+                            this.tokens[i] = {type:TokenType.ELSE_IF};
+                            this.tokens.splice(i+1, 1);
+                        } else {
+                            this.tokens[i] = {type:TokenType.ELSE};
+                        }
+                        break;
+                    case "int":
+                        this.tokens[i] = {type:TokenType.INT};
                 }
             }
         }
