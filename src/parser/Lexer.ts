@@ -51,6 +51,8 @@ enum TokenType {
     CASE,
     DEFAULT,
     STATIC,
+    VAR_STRING,
+    VAR_BOOL
 }
 interface Token {
     type: TokenType;
@@ -504,6 +506,27 @@ class Lexer {
                         break;
                     case "break":
                         this.tokens[i] = {type: TokenType.BREAK};
+                        break;
+                    case "async":
+                        this.tokens[i] = {type:TokenType.ASYNC};
+                        break;
+                    case "await":
+                        this.tokens[i] = {type: TokenType.AWAIT};
+                        break;
+                    case "class":
+                        this.tokens[i] = {type: TokenType.CLASS};
+                        break;
+                    case "true":
+                        this.tokens[i] = {type: TokenType.BOOL, value:true};
+                        break;
+                    case "false":
+                        this.tokens[i] = {type: TokenType.BOOL, value:false};
+                        break;
+                    case "string":
+                        this.tokens[i] = {type: TokenType.VAR_STRING};
+                        break;
+                    case "bool":
+                        this.tokens[i] = {type: TokenType.VAR_BOOL};
                         break;
                 }
             }
