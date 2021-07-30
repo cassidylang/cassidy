@@ -52,7 +52,8 @@ enum TokenType {
     DEFAULT,
     STATIC,
     VAR_STRING,
-    VAR_BOOL
+    VAR_BOOL,
+    USING
 }
 interface Token {
     type: TokenType;
