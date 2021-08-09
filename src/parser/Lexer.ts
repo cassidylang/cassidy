@@ -57,6 +57,9 @@ enum TokenType {
 }
 interface Token {
     type: TokenType;
+    line: number
+    startCol: number;
+    endCol?: number;
     value?: any;
 }
 
@@ -68,152 +71,168 @@ class Lexer {
         let stack = "";
         let lookahead = (n: number) => charstream[n+1];
         let eat = (t: Token) => this.tokens.push(t);
+        let col = 0, line = 0
         for (let i = 0; i<charstream.length; i++) {
             let char = charstream[i];
             switch (char) {
                 case "\'":
                     if (this.tokens[this.tokens.length-1].type !== TokenType.SINGLE_QUOTE && stack !== "") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack, line: line, startCol: col});
                         stack = "";
                     }
                     if (stack === "\\") {
-                        eat({type: TokenType.ESCAPED_SINGLE_QUOTE});
+                        eat({type: TokenType.ESCAPED_SINGLE_QUOTE, line: line, startCol: col});
                     } else if (stack === "") {
-                        eat({type: TokenType.SINGLE_QUOTE});
+                        eat({type: TokenType.SINGLE_QUOTE, line: line, startCol: col});
                     } else {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack, line: line, startCol: col, endCol: col + stack.length-1});
                         stack = "";
-                        eat({type:TokenType.SINGLE_QUOTE});
+                        eat({type:TokenType.SINGLE_QUOTE, line: line, startCol: col});
                     }
+                    col+=1;
+                    break;
                 case "\"":
                     if (this.tokens[this.tokens.length-1].type !== TokenType.DOUBLE_QUOTE && stack !== "") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                     }
                     if (stack === "\\") {
-                        eat({type: TokenType.ESCAPED_DOUBLE_QUOTE});
+                        eat({type: TokenType.ESCAPED_DOUBLE_QUOTE,line: line, startCol: col});
                     } else if (stack === "") {
-                        eat({type: TokenType.DOUBLE_QUOTE});
+                        eat({type: TokenType.DOUBLE_QUOTE,line: line, startCol: col});
                     } else {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
-                        eat({type:TokenType.DOUBLE_QUOTE});
+                        eat({type:TokenType.DOUBLE_QUOTE,line: line, startCol: col});
                     }
+                    col+=1;
+                    break;
                 case " ":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.WHITESPACE});
+                    eat({type:TokenType.WHITESPACE,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "\t":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.WHITESPACE});
+                    eat({type:TokenType.WHITESPACE,line: line, startCol: col});
+                    col+=1;
                     break;
                 case ";":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.SEMICOLON});
+                    eat({type:TokenType.SEMICOLON,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "\n":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.LINE_FEED});
+                    eat({type:TokenType.LINE_FEED,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "\r":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.CARRIAGE_RETURN});
+                    eat({type:TokenType.CARRIAGE_RETURN,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "\f":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.FORM_FEED});
+                    eat({type:TokenType.FORM_FEED,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "-":
                     if (stack === "-") {
-                        eat({type:TokenType.MATH_OPERATOR, value: "--"});
+                        eat({type:TokenType.MATH_OPERATOR, value: "--",line: line, startCol: col});
                         stack = ""
                     } else if (stack !== "-" && lookahead(i)!=="-") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                         if (lookahead(i)==="=") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.MATH_OPERATOR, value: "-"});
+                            eat({type:TokenType.MATH_OPERATOR, value: "-",line: line, startCol: col});
                             stack = "";
                         }
                     }
+                    col+=1;
                     break;
                 case "+":
                     if (stack === "+") {
-                        eat({type:TokenType.MATH_OPERATOR, value: "++"});
+                        eat({type:TokenType.MATH_OPERATOR, value: "++",line: line, startCol: col});
                         stack = ""
                     } else if (stack !== "+" && lookahead(i)!=="+") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                         if (lookahead(i)==="=") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.MATH_OPERATOR, value: "+"});
+                            eat({type:TokenType.MATH_OPERATOR, value: "+",line: line, startCol: col});
                             stack = "";
                         }
                     }
+                    col+=1;
                     break;
                 case "*":
                     if (stack === "*") {
                         if (lookahead(i)==="=") {
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value: "**="});
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value: "**=",line: line, startCol: col});
                             stack = "";
                         } else {
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value: "**"});
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value: "**",line: line, startCol: col});
                             stack = "";
                         }
                     } else if (stack === "/") {
-                        eat({type:TokenType.MULTILINE_COMMENT_START});
+                        eat({type:TokenType.MULTILINE_COMMENT_START,line: line, startCol: col});
                         stack = "";
                     } else if (stack !== "*" && lookahead(i)!=="*") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                         if (lookahead(i)==="=") {
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value: "*="});
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value: "*=",line: line, startCol: col});
                         } else if (lookahead(i)==="/") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.MATH_OPERATOR, value: "*"});
+                            eat({type:TokenType.MATH_OPERATOR, value: "*",line: line, startCol: col});
                         }
                     }
+                    col+=1;
                     break;
                 case "|":
                     if (stack === "|") {
                         if (lookahead(i)==="=") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.LOGICAL_OPERATOR, value: "||"});
+                            eat({type:TokenType.LOGICAL_OPERATOR, value: "||",line: line, startCol: col});
                             stack = ""
                         }
                     } else if (stack !== "|" && lookahead(i)!=="|") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                         if (lookahead(i)==="=") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.BITWISE_OPERATOR, value: "|"});
+                            eat({type:TokenType.BITWISE_OPERATOR, value: "|",line: line, startCol: col});
                         }
                     }
+                    col+=1;
                     break;
                 case "&":
                     if (stack === "&") {
-                        eat({type:TokenType.LOGICAL_OPERATOR, value: "&&"});
+                        eat({type:TokenType.LOGICAL_OPERATOR, value: "&&",line: line, startCol: col});
                         stack = "";
                     } else if (stack !== "&" && lookahead(i)!=="&") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                         if (lookahead(i)==="=") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.BITWISE_OPERATOR, value: "&"});
+                            eat({type:TokenType.BITWISE_OPERATOR, value: "&",line: line, startCol: col});
                         }
                     }
+                    col+=1;
                     break;
                 case ">":
                     if (stack === ">") {
@@ -221,7 +240,7 @@ class Lexer {
                             if (lookahead(i)==="=") {
                                 stack+=char;
                             } else {
-                                eat({type:TokenType.BITWISE_OPERATOR, value: ">>"});
+                                eat({type:TokenType.BITWISE_OPERATOR, value: ">>",line: line, startCol: col});
                                 stack = "";
                             }
                         } else {
@@ -231,240 +250,280 @@ class Lexer {
                         if (lookahead(i)==="=") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.BITWISE_OPERATOR, value: ">>>"});
+                            eat({type:TokenType.BITWISE_OPERATOR, value: ">>>",line: line, startCol: col});
                             stack = "";
                         }
                     } else if (stack === "=") {
-                        eat({type:TokenType.ARROW_FUNCTION});
+                        eat({type:TokenType.ARROW_FUNCTION,line: line, startCol: col});
                         stack = "";
                     } else if ((stack !== ">" && stack !== "") && lookahead(i)!==">") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                         if (lookahead(i)==="=") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.MATH_OPERATOR, value: ">"});
+                            eat({type:TokenType.MATH_OPERATOR, value: ">",line: line, startCol: col});
                             stack = "";
                         }
                     }
+                    col+=1;
                     break;
                 case "<":
                     if (stack === "<") {
                         if (lookahead(i)==="=") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.BITWISE_OPERATOR, value: "<<"});
+                            eat({type:TokenType.BITWISE_OPERATOR, value: "<<",line: line, startCol: col});
                         }
                         stack = "";
                     } else if (stack !== "<" && lookahead(i)!=="<") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                         if (lookahead(i)==="=") {
                             stack+=char;
                         } else {
-                            eat({type:TokenType.MATH_OPERATOR, value: "<"});
+                            eat({type:TokenType.MATH_OPERATOR, value: "<",line: line, startCol: col});
                             stack = "";
                         }
                     }
+                    col+=1;
                     break;
                 case "/":
                     if (stack = "/") {
-                        eat({type:TokenType.COMMENT});
+                        eat({type:TokenType.COMMENT,line: line, startCol: col});
                         stack = "";
                     } else if (stack.split("")[Math.max(stack.length-1, 0)] === "*") { 
-                        eat({type:TokenType.MULTILINE_COMMENT_END});
+                        eat({type:TokenType.MULTILINE_COMMENT_END,line: line, startCol: col});
                         stack="";
                     } else if (stack !== "/" && lookahead(i)!=="/") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                         if (lookahead(i)==="*" || lookahead(i)==="=") {
                             stack+=char;
                         }
-                        eat({type:TokenType.MATH_OPERATOR, value:"/"});
+                        eat({type:TokenType.MATH_OPERATOR, value:"/",line: line, startCol: col});
                     }
+                    col+=1;
                     break; 
                 case "(":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.L_PAREN});
+                    eat({type:TokenType.L_PAREN,line: line, startCol: col});
+                    col+=1;
                     break;
                 case ")":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.R_PAREN});
+                    eat({type:TokenType.R_PAREN,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "[":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.L_BRACKET});
+                    eat({type:TokenType.L_BRACKET,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "]":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.R_BRACKET});
+                    eat({type:TokenType.R_BRACKET,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "{":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.L_CURLY});
+                    eat({type:TokenType.L_CURLY,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "}":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.R_CURLY});
+                    eat({type:TokenType.R_CURLY,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "!":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
                     if (lookahead(i) === "=") {
                         stack+=char;
                     } else {
-                        eat({type:TokenType.R_CURLY});
+                        eat({type:TokenType.R_CURLY,line: line, startCol: col});
                     }
+                    col+=1;
                     break;
                 case "^":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
                     if (lookahead(i) === "=") {
                         stack+=char;
                     } else {
-                        eat({type:TokenType.BITWISE_OPERATOR, value: "^"});
+                        eat({type:TokenType.BITWISE_OPERATOR, value: "^",line: line, startCol: col});
                     }
+                    col+=1;
                     break;
                 case "?":
                     if (stack = "?") {
                         if (lookahead(i) === "=") { 
                             stack+=char;
                         } else {
-                            eat({type:TokenType.LOGICAL_OPERATOR, value: "??"});
+                            eat({type:TokenType.LOGICAL_OPERATOR, value: "??",line: line, startCol: col});
                             stack = "";
                         }
                     } else if (stack = "" && lookahead(i) === "=") { 
                         stack+=char
                     } else {
-                        eat({type:TokenType.VALUE, value: "?"});
+                        eat({type:TokenType.VALUE, value: "?",line: line, startCol: col});
                     }
+                    col+=1;
                     break;
                 case "=":
                     switch (stack) {
                         case "=":
                             if (lookahead(i)!=="=") {
-                                eat({type:TokenType.COMPARISON_OPERATOR, value:"=="});
+                                eat({type:TokenType.COMPARISON_OPERATOR, value:"==",line: line, startCol: col});
                             } else stack += char;
-                            break;
+                            col+=1;
+                    break;
                         case "==":
-                            eat({type:TokenType.COMPARISON_OPERATOR, value:"==="});
-                            break;
+                            eat({type:TokenType.COMPARISON_OPERATOR, value:"===",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "*":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"*="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"*=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "**":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"**="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"**=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "!":
                             if (lookahead(i)!=="=") {
-                                eat({type:TokenType.COMPARISON_OPERATOR, value:"!="});
+                                eat({type:TokenType.COMPARISON_OPERATOR, value:"!=",line: line, startCol: col});
                             } else stack+=char;
-                            break;
+                            col+=1;
+                    break;
                         case "!=":
-                            eat({type:TokenType.COMPARISON_OPERATOR, value:"!=="});
-                            break;
+                            eat({type:TokenType.COMPARISON_OPERATOR, value:"!==",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case ">>":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:">>="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:">>=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "<<":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"<<="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"<<=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case ">>>":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:">>>="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:">>>=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "+":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"+="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"+=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "-":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"-="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"-=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "/":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"/="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"/=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "%":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"%="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"%=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "??":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"??="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"??=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "|":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"|="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"|=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "||":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"||="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"||=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         case "^":
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"^="});
-                            break;
+                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"^=",line: line, startCol: col});
+                            col+=1;
+                    break;
                         default:
                             if (stack === "") {
                                 if (lookahead(i)!=="=") {
-                                    eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"="});
+                                    eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"=",line: line, startCol: col});
                                 } else stack += char;
-                                break;
+                                col+=1;
+                    break;
                             } else {
-                                eat({type:TokenType.VALUE, value: stack});
+                                eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                                 stack = "";
                                 if (lookahead(i)!=="=") {
-                                    eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"="});
+                                    eat({type:TokenType.ASSIGNMENT_OPERATOR, value:"=",line: line, startCol: col});
                                 } else stack += char;
-                                break;
+                                col+=1;
+                    break;
                             }
                     }
+                    col+=1;
                     break;
                 case ".":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.DOT});
+                    eat({type:TokenType.DOT,line: line, startCol: col});
+                    col+=1;
                     break;
                 case ":":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.VALUE, value:":"});
+                    eat({type:TokenType.VALUE, value:":",line: line, startCol: col});
+                    col+=1;
                     break;
                 case "`":
                     if (this.tokens[this.tokens.length-1].type !== TokenType.TEMPLATE_LITERAL && stack !== "") {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
                     }
                     if (stack === "") {
-                        eat({type: TokenType.TEMPLATE_LITERAL});
+                        eat({type: TokenType.TEMPLATE_LITERAL,line: line, startCol: col});
                     } else {
-                        eat({type:TokenType.VALUE, value: stack});
+                        eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                         stack = "";
-                        eat({type:TokenType.TEMPLATE_LITERAL});
+                        eat({type:TokenType.TEMPLATE_LITERAL,line: line, startCol: col});
                     }
+                    col+=1;
                     break;
                 case "$":
-                    eat({type:TokenType.VALUE, value: "$"});
+                    eat({type:TokenType.VALUE, value: "$",line: line, startCol: col});
+                    col+=1;
                     break;
                 case ",":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.COMMA});
+                    eat({type:TokenType.COMMA,line: line, startCol: col});
+                    col+=1;
                     break;
                 case "~":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
-                    eat({type:TokenType.BITWISE_OPERATOR, value: "~"});
+                    eat({type:TokenType.BITWISE_OPERATOR, value: "~",line: line, startCol: col});
+                    col+=1;
                     break;
                 case "%":
-                    eat({type:TokenType.VALUE, value: stack});
+                    eat({type:TokenType.VALUE, value: stack,line: line, startCol: col});
                     stack = "";
                     if (lookahead(i)==="=") {
                         stack+=char
                     } else {
-                        eat({type:TokenType.MATH_OPERATOR, value: "%"});
+                        eat({type:TokenType.MATH_OPERATOR, value: "%",line: line, startCol: col});
                     }
+                    col+=1;
                     break;
                 default:
                     stack+=char;
+                    col+=1;
                     break;
             }
         }
@@ -478,56 +537,56 @@ class Lexer {
                 let out = this.crawl(i, TokenType.DOUBLE_QUOTE);
                 let length = out[0];
                 this.tokens.splice(i+1, length);
-                this.tokens[i] = {type: TokenType.STRING, value: out[1]}
+                this.tokens[i] = {type: TokenType.STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
             } else if (this.tokens[i].type === TokenType.SINGLE_QUOTE) {
                 let out = this.crawl(i, TokenType.SINGLE_QUOTE);
                 let length = out[0];
                 this.tokens.splice(i+1, length);
-                this.tokens[i] = {type: TokenType.STRING, value: out[1]}
+                this.tokens[i] = {type: TokenType.STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
             } else if (this.tokens[i].type === TokenType.TEMPLATE_LITERAL) {
                 let out = this.crawl(i, TokenType.TEMPLATE_LITERAL);
                 let length = out[0];
                 this.tokens.splice(i+1, length);
-                this.tokens[i] = {type: TokenType.TEMPLATE_STRING, value: out[1]}
+                this.tokens[i] = {type: TokenType.TEMPLATE_STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
             } else if (this.tokens[i].type === TokenType.VALUE) {
                 switch (this.tokens[i].value) {
                     case "if":
-                        this.tokens[i] = {type:TokenType.IF};
+                        this.tokens[i] = {type:TokenType.IF, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                     case "else":
                         if (lookahead(i).value === "if") {
-                            this.tokens[i] = {type:TokenType.ELSE_IF};
+                            this.tokens[i] = {type:TokenType.ELSE_IF, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                             this.tokens.splice(i+1, 1);
                         } else {
-                            this.tokens[i] = {type:TokenType.ELSE};
+                            this.tokens[i] = {type:TokenType.ELSE, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         }
                         break;
                     case "int":
-                        this.tokens[i] = {type:TokenType.INT};
+                        this.tokens[i] = {type:TokenType.INT, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                     case "break":
-                        this.tokens[i] = {type: TokenType.BREAK};
+                        this.tokens[i] = {type: TokenType.BREAK, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                     case "async":
-                        this.tokens[i] = {type:TokenType.ASYNC};
+                        this.tokens[i] = {type:TokenType.ASYNC, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                     case "await":
-                        this.tokens[i] = {type: TokenType.AWAIT};
+                        this.tokens[i] = {type: TokenType.AWAIT, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                     case "class":
-                        this.tokens[i] = {type: TokenType.CLASS};
+                        this.tokens[i] = {type: TokenType.CLASS, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                     case "true":
-                        this.tokens[i] = {type: TokenType.BOOL, value:true};
+                        this.tokens[i] = {type: TokenType.BOOL, value:true, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                     case "false":
-                        this.tokens[i] = {type: TokenType.BOOL, value:false};
+                        this.tokens[i] = {type: TokenType.BOOL, value:false, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                     case "string":
-                        this.tokens[i] = {type: TokenType.VAR_STRING};
+                        this.tokens[i] = {type: TokenType.VAR_STRING, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                     case "bool":
-                        this.tokens[i] = {type: TokenType.VAR_BOOL};
+                        this.tokens[i] = {type: TokenType.VAR_BOOL, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
                 }
             }

@@ -2,11 +2,15 @@
 exports.__esModule = true;
 exports.ArrayF = void 0;
 exports.ArrayF = {
-    sum: function (arr) { return arr.reduce(function (a, b) { return a + b; }); },
-    max: function (arr) { return Math.max.apply(arr); },
-    min: function (arr) { return Math.min.apply(arr); },
-    binarysearch: function (Arr, value) {
-        var arr = exports.ArrayF.sort(Arr), low = 0, high = arr.length - 1, mid;
+    // Prototype
+    sum: function(arr) { return arr.reduce(function(a, b) { return a + b; }); },
+    max: function(arr) { return Math.max.apply(arr); },
+    min: function(arr) { return Math.min.apply(arr); },
+    binarysearch: function(Arr, value) {
+        var arr = exports.ArrayF.sort(Arr),
+            low = 0,
+            high = arr.length - 1,
+            mid;
         while (low <= high) {
             mid = Math.floor((low + high) / 2);
             if (arr[mid] === value)
@@ -18,7 +22,7 @@ exports.ArrayF = {
         }
         return -1;
     },
-    sort: function (arr) {
+    sort: function(arr) {
         function quicksort(array, left, right) {
             if (left >= right) {
                 return;
@@ -28,11 +32,13 @@ exports.ArrayF = {
             quicksort(array, left, index - 1);
             quicksort(array, index, right);
         }
+
         function swap(array, left, right) {
             var t = array[right];
             array[right] = array[left];
             array[left] = t;
         }
+
         function partition(array, left, right, pivot) {
             while (left <= right) {
                 while (array[left] < pivot) {
