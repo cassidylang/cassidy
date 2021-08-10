@@ -129,6 +129,30 @@ export class ForStatement extends ASTNode {
 }
 
 export class IfStatement extends ASTNode {
+    constructor(binExpr: BinaryExpression, body: Body, chain: ElseIfStatement | ElseStatement) {
+        super();
+        this.binExpr = binExpr;
+        this.body = body;
+        this.chain = chain;
+    }
+    binExpr: BinaryExpression;
+    body: Body;
+    chain: ElseIfStatement | ElseStatement
+}
+
+export class ElseIfStatement extends ASTNode {
+    constructor(binExpr: BinaryExpression, body: Body, chain: ElseIfStatement | ElseStatement) {
+        super();
+        this.binExpr = binExpr;
+        this.body = body;
+        this.chain = chain;
+    }
+    binExpr: BinaryExpression;
+    body: Body;
+    chain: ElseIfStatement | ElseStatement
+}
+
+export class ElseStatement extends ASTNode {
     constructor(binExpr: BinaryExpression, body: Body) {
         super();
         this.binExpr = binExpr;
@@ -146,12 +170,4 @@ export class FunctionCall extends ASTNode {
     }
     identifier: string;
     inputParam: varType;
-}
-
-export class BaseProgram extends ASTNode {
-    constructor(program: Body) {
-        super();
-        this.program = program;
-    }
-    program: Body;
 }
