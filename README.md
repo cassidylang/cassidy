@@ -30,7 +30,7 @@ class Item {
     }
 }
 // You can inherit a class like this
-class Weapon : Item{
+class Weapon : Item {
     public float damage;
     public Weapon(float damage, string name) : base(name) {
         this.damage = damage;
@@ -40,7 +40,7 @@ class Weapon : Item{
     }
 }
 
-class Consumable {
+class Consumable : Item {
     public int useTime;
     public Consumable(int useTime, string name):base(name) {
         this.useTime = useTime;
