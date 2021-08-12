@@ -8,6 +8,56 @@
   <a href="https://github.com/cassidylang/cassidy"><img alt="language" src="https://img.shields.io/badge/language-Typescript-purple.svg"></a>
 </div>
 
+## Examples
+
+<b>Hello, World!</b>
+
+```C#
+class Main {
+    static void Main() {
+        console.log("Hello, World!")
+    }
+}
+```
+
+<b>Class and OOP system</b>
+  
+```C#
+class Item {
+    public string name;
+    public Item(string name) {
+        this.name = name;
+    }
+}
+// You can inherit a class like this
+class Weapon : Item {
+    public float damage;
+    public Weapon(float damage, string name) : base(name) {
+        this.damage = damage;
+    }
+    void dealDamage() {
+        console.log(`Your ${name} deals ${damage} damage`)
+    }
+}
+
+class Consumable : Item {
+    public int useTime;
+    public Consumable(int useTime, string name):base(name) {
+        this.useTime = useTime;
+    }
+    void consume() {
+        console.log(`You consumed`)
+    }
+}
+// You can also inherit multiple classes
+class ThrowingWeapon : Consumable,Weapon {
+    public float speed;
+    public ThrowingWeapon(float speed, int useTime, string name, float damage):base(useTime, name, damage) {
+        this.speed = speed;
+    }
+}
+```
+
 ## Copyrights and License
 Copyrights © 2021 Cassidy
 
