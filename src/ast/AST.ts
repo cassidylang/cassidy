@@ -171,3 +171,4 @@ export class FunctionCall extends ASTNode {
     identifier: string;
     inputParam: varType;
 }
+
