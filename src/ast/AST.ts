@@ -1,4 +1,4 @@
-type varType = string | number | boolean | BigInt | "interface";
+type varType = "string" | "float" | "boolean" | "int" | "undefined";
 type accessModifier = "immutable" | "public" | "private" | "static" | "protected" | "abstract";
 type fixOperator = "++" | "--";
 type operator = "+=" | "-=" | "*=" | "/=" | fixOperator;
@@ -13,15 +13,15 @@ interface Literal {
 }
 
 export class Variable {
-    constructor(identifier: string, accessModifier: accessModifier[], value: varType) {
+    constructor(identifier: string, accessModifier: accessModifier[], value: any) {
         this.identifier = identifier;
         this.accessModifier = accessModifier;
         this.value = value;
     }
     identifier: string;
     accessModifier: accessModifier[];
-    value: varType = typeof undefined;
-    type: string = typeof this.value;
+    value: any;
+    type: varType = "undefined";
 }
 
 interface BinaryOperation {
@@ -65,37 +65,35 @@ export class ASTNode {
 }
 
 export class DataNode extends ASTNode {
-    constructor(identifier: string, type: string, accessModifier: accessModifier[]) {
+    constructor(identifier: string, type: TokenType, accessModifier: accessModifier[]) {
         super();
         this.identifier = identifier;
         this.type = type;
         this.accessModifier = accessModifier;
     }
     accessModifier: accessModifier[];
-    type: string;
+    type: TokenType;
     identifier: string;
 }
 
-export class VariableDeclaration extends ASTNode {
-    constructor(left: Variable, right: Variable | varType | undefined | ArrowFunction) {
-        super();
-        this.left = left;
+export class VariableDeclaration extends DataNode {
+    constructor(identifier: string, type: TokenType, accessModifier: accessModifier[], right: Variable | any | ArrowFunction) {
+        super(identifier, type, accessModifier);
         this.right = right;
     }
-    left: Variable;
-    right: Variable | varType | undefined | ArrowFunction;
+    right: Variable | any | ArrowFunction;
 }
 
-export class Body extends ASTNode {
-    constructor(components: Array<DataNode>) {
+export class BodyBlock extends ASTNode {
+    constructor(components: ASTNode[]) {
         super();
         this.components = components;
     }
-    components: Array<ASTNode>
+    components: ASTNode[]
 }
 
 export class FunctionDeclaration extends DataNode {
-    constructor(identifier: string, type: string, accessModifier: accessModifier[], params: Parameter[], body: Body) {
+    constructor(identifier: string, type: TokenType, accessModifier: accessModifier[], params: Parameter[], body: Body) {
         super(identifier, type, accessModifier);
         this.params = params;
         this.body = body;
@@ -170,5 +168,13 @@ export class FunctionCall extends ASTNode {
     }
     identifier: string;
     inputParam: varType;
+}
+
+export class Program extends ASTNode {
+    constructor(components: ASTNode[]) {
+        super();
+        this.components = components;
+    }
+    components: ASTNode[];
 }
 

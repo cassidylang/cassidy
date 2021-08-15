@@ -49,9 +49,10 @@ enum TokenType {
     CASE,
     DEFAULT,
     STATIC,
-    VAR_STRING,
-    VAR_BOOL,
-    USING
+    USING,
+    NEW,
+    VALUE_STRING,
+    FLOAT
 }
 interface Token {
     type: TokenType;
@@ -519,12 +520,12 @@ class Lexer {
                 let out = this.crawl(i, TokenType.DOUBLE_QUOTE);
                 let length = out[0];
                 this.tokens.splice(i+1, length);
-                this.tokens[i] = {type: TokenType.STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
+                this.tokens[i] = {type: TokenType.VALUE_STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
             } else if (this.tokens[i].type === TokenType.SINGLE_QUOTE) {
                 let out = this.crawl(i, TokenType.SINGLE_QUOTE);
                 let length = out[0];
                 this.tokens.splice(i+1, length);
-                this.tokens[i] = {type: TokenType.STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
+                this.tokens[i] = {type: TokenType.VALUE_STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
             } else if (this.tokens[i].type === TokenType.TEMPLATE_LITERAL) {
                 let out = this.crawl(i, TokenType.TEMPLATE_LITERAL);
                 let length = out[0];
@@ -565,10 +566,10 @@ class Lexer {
                         this.tokens[i] = {type: TokenType.BOOL, value:false, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                             break;
                     case "string":
-                        this.tokens[i] = {type: TokenType.VAR_STRING, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
+                        this.tokens[i] = {type: TokenType.STRING, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                             break;
                     case "bool":
-                        this.tokens[i] = {type: TokenType.VAR_BOOL, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
+                        this.tokens[i] = {type: TokenType.BOOL, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                             break;
                 }
             }

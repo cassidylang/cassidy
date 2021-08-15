@@ -1,6 +1,6 @@
 interface VarObj {
     identifier: string;
-    type: string;
+    type: TokenType;
     value: string;
 }
 interface Param {
