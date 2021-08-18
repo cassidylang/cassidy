@@ -37,21 +37,16 @@ interface Suffix {
     variable: Variable;
 }
 
-interface BinaryExpression {
-    left: Variable;
-    right: Variable;
+export interface BinaryExpression {
+    left: any;
+    right: any;
+    sign: string;
 }
 
 interface UpdateExpression {
     variable: Variable;
     operator: operator;
     operatorValue?: varType;
-}
-
-interface ArrowFunction {
-    param?: Parameter;
-    body: Body;
-    isSelfReturning: boolean;
 }
 
 interface VariableAssignment {
@@ -77,11 +72,11 @@ export class DataNode extends ASTNode {
 }
 
 export class VariableDeclaration extends DataNode {
-    constructor(identifier: string, type: TokenType, accessModifier: accessModifier[], right: Variable | any | ArrowFunction) {
+    constructor(identifier: string, type: TokenType, accessModifier: accessModifier[], right: Variable | any) {
         super(identifier, type, accessModifier);
         this.right = right;
     }
-    right: Variable | any | ArrowFunction;
+    right: Variable | any;
 }
 
 export class BodyBlock extends ASTNode {
@@ -93,27 +88,27 @@ export class BodyBlock extends ASTNode {
 }
 
 export class FunctionDeclaration extends DataNode {
-    constructor(identifier: string, type: TokenType, accessModifier: accessModifier[], params: Parameter[], body: Body) {
+    constructor(identifier: string, type: TokenType, accessModifier: accessModifier[], params: Parameter[], body: BodyBlock) {
         super(identifier, type, accessModifier);
         this.params = params;
         this.body = body;
     }
     params: Parameter[];
-    body: Body;
+    body: BodyBlock;
 }
 
 export class WhileStatement extends ASTNode {
-    constructor(binExpr: BinaryExpression, body: Body) {
+    constructor(binExpr: BinaryExpression, body: BodyBlock) {
         super();
         this.binExpr = binExpr;
         this.body = body;
     }
     binExpr: BinaryExpression;
-    body: Body;
+    body: BodyBlock;
 }
 
 export class ForStatement extends ASTNode {
-    constructor(varDec: VariableAssignment,binExpr: BinaryExpression,update: UpdateExpression, body: Body) {
+    constructor(varDec: VariableAssignment,binExpr: BinaryExpression,update: UpdateExpression, body: BodyBlock) {
         super();
         this.binExpr = binExpr;
         this.varDec = varDec;
@@ -123,41 +118,41 @@ export class ForStatement extends ASTNode {
     varDec: VariableAssignment;
     binExpr: BinaryExpression;
     update: UpdateExpression;
-    body: Body;
+    body: BodyBlock;
 }
 
 export class IfStatement extends ASTNode {
-    constructor(binExpr: BinaryExpression, body: Body, chain: ElseIfStatement | ElseStatement) {
+    constructor(binExpr: BinaryExpression, body: BodyBlock, chain: ElseIfStatement | ElseStatement) {
         super();
         this.binExpr = binExpr;
         this.body = body;
         this.chain = chain;
     }
     binExpr: BinaryExpression;
-    body: Body;
+    body: BodyBlock;
     chain: ElseIfStatement | ElseStatement
 }
 
 export class ElseIfStatement extends ASTNode {
-    constructor(binExpr: BinaryExpression, body: Body, chain: ElseIfStatement | ElseStatement) {
+    constructor(binExpr: BinaryExpression, body: BodyBlock, chain: ElseIfStatement | ElseStatement) {
         super();
         this.binExpr = binExpr;
         this.body = body;
         this.chain = chain;
     }
     binExpr: BinaryExpression;
-    body: Body;
+    body: BodyBlock;
     chain: ElseIfStatement | ElseStatement
 }
 
 export class ElseStatement extends ASTNode {
-    constructor(binExpr: BinaryExpression, body: Body) {
+    constructor(binExpr: BinaryExpression, body: BodyBlock) {
         super();
         this.binExpr = binExpr;
         this.body = body;
     }
     binExpr: BinaryExpression;
-    body: Body;
+    body: BodyBlock;
 }
 
 export class FunctionCall extends ASTNode {
@@ -176,5 +171,17 @@ export class Program extends ASTNode {
         this.components = components;
     }
     components: ASTNode[];
+}
+
+export class ArrowFunction extends DataNode {
+    constructor(identifier: string, type: TokenType, accessModifier: accessModifier[], body: BodyBlock, isBlock: boolean, params?: Parameter[]) {
+        super(identifier, type, accessModifier);
+        this.params = params;
+        this.body = body;
+        this.isBlock = isBlock;
+    }
+    params: Parameter[] | undefined;
+    body: BodyBlock;
+    isBlock: boolean;
 }
 

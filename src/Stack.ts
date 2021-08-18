@@ -1,11 +1,11 @@
 interface VarObj {
     identifier: string;
-    type: TokenType;
+    type: TokenType | string;
     value: string;
 }
 interface Param {
     identifier: string;
-    type: string[];
+    type: string | TokenType;
     baseValue?: string;
 }
 interface FunctionObj {

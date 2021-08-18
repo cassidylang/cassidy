@@ -1,4 +1,5 @@
-import { ASTNode, BodyBlock, Program, VariableDeclaration } from "../ast/AST";
+import { parse } from "path/posix";
+import { ASTNode, BodyBlock, Program, VariableDeclaration,BinaryExpression } from "../ast/AST";
 class Parser {
     constructor() {}
 
@@ -6,12 +7,18 @@ class Parser {
     ptr: number = 0;
     running: boolean = true;
     global: boolean = true;
+    lambda: boolean = false;
+    class: boolean = false;
     program: Program = new Program([])
     currentAppendBody: BodyBlock = new BodyBlock([]);
-    parse() {
+    nextTokenValue = Lexer.tokens[this.ptr+1].value;
+    parseExpression() {
         switch (this.tokens[this.ptr].type) {
             case TokenType.INT:
                 this.parseTypedObjectDeclaration(TokenType.INT);
+                break;
+            case TokenType.IF:
+                this.parseIf();
                 break;
         }
     }
@@ -28,15 +35,15 @@ class Parser {
             this.parseVariableDeclaration(type, identifier, undefined);
         } else if (Lexer.tokens[this.ptr+1].type === TokenType.L_PAREN) {
             this.parseMethod(identifier, type);
-        } else if (Lexer.tokens[this.ptr+1].value === "=") {
+        } else if (this.nextTokenValue === "=") {
             this.ptr+=1;
-            if (Lexer.tokens[this.ptr+1].value === "(") {
+            if (this.nextTokenValue === "(") {
                 this.parseLambda(identifier, type);
             } else if (this.isVar(Lexer.tokens[this.ptr+1].type)) {
                 this.ptr+=1;
-                this.parseMethod(Lexer.tokens[this.ptr+1].value, Lexer.tokens[this.ptr].type);
+                this.parseMethod(this.nextTokenValue, Lexer.tokens[this.ptr].type);
             } else {
-                this.parseVariableDeclaration(type, identifier, Lexer.tokens[this.ptr+1].value);
+                this.parseVariableDeclaration(type, identifier, this.nextTokenValue);
             }
         }
     }
@@ -47,10 +54,41 @@ class Parser {
         }
     }
     parseLambda(identifier: string, returnType:TokenType = TokenType.VOID) {
-
+        this.lambda = true;
+        this.ptr+=1;
+        let block = false,
+            param: Param[],
+            parsingParam = true;
+        while (parsingParam) {
+            if (this.isVar(this.nextTokenValue.type)) {
+                this.ptr+=1
+            }
+        }
     }
     parseMethod(identifier: string, returnType:TokenType = TokenType.VOID) {
 
+    }
+    parseIf() {
+        this.ptr+=1;
+        this.parseBinaryExpression();
+    }
+    parseBinaryExpression(): BinaryExpression {
+        this.ptr+=1;
+        let parsing = true,isRight = false;
+        let right: any, left: any, sign: string = "", current: any = [];
+        while (parsing) {
+            if (this.tokens[this.ptr].type === TokenType.L_PAREN) {
+                isRight? right = this.parseBinaryExpression() : left = this.parseBinaryExpression();
+            } else if (this.tokens[this.ptr].type === TokenType.COMPARISON_OPERATOR) {
+                sign = this.tokens[this.ptr].value;
+            } else if (this.tokens[this.ptr].type === TokenType.R_PAREN) {
+                isRight? right = current : left = current;
+            }
+        }
+        return {left: left, right: right, sign: sign};
+    }
+    parseArithmeticExpression(expr: string) {
+        RPN.toRPN(expr);
     }
     isVar(type: TokenType) {
         let possibleType = [
