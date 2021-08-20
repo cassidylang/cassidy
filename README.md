@@ -15,11 +15,14 @@ Cassidy was originally created as a language that brings the idea of C#, combine
 So over all, it aims to bring safety to web projects, while helping teams works together more efficiently through its beautiful object models, and modern features that are missing from Javascript, while remaining Javascript! It's still in development, so there are currently no usable build, but we are pushing hard to get Cassidy released.
 
 ## The authors
-- @anapple96 - Co-founder and lead developer of the project.
-- @nguyenphuminh - Co-founder of the project.
+- anapple96 - Co-founder and lead developer of the project.
+- nguyenphuminh - Co-founder of the project.
 
 ## Contributing to Cassidy!
-Cassidy is a bulky and complex project, we really appreciate any help in the development process. 
+Cassidy is a bulky and complex project, we really appreciate any help in the development process.
+
+### Support us!
+You can also support us just by starring the repo and sharing the project with your friends, co-workers, even your boss 🙂.
 
 ## Examples
 
