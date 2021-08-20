@@ -7,6 +7,8 @@
   <a href="https://github.com/cassidylang/cassidy/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg"/></a>
   <a href="https://github.com/cassidylang/cassidy"><img alt="language" src="https://img.shields.io/badge/language-Typescript-purple.svg"></a>
   <a href="https://github.com/cassidylang/cassidy/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/cassidylang/cassidy?color=gold"></a>
+  <a href="https://github.com/cassidylang/cassidy/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
+  <a href="https://discord.gg/sjMVQP43zD"><img src="https://img.shields.io/discord/825295074967289886.svg"/></a>
 </div>
 
 
