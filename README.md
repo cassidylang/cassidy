@@ -9,9 +9,21 @@
   <a href="https://github.com/cassidylang/cassidy/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/cassidylang/cassidy?color=gold"></a>
 </div>
 
+## What is Cassidy?
+Cassidy was originally created as a language that brings the idea of C#, combined with the unique features from Javascript. But over the time, we have realized that the we should bring the core ideology behind it to the web, granting safety and the ability to work with teams easily.
+
+So over all, it aims to bring safety to web projects, while helping teams works together more efficiently through its beautiful object models, and modern features that are missing from Javascript, while remaining Javascript! It's still in development, so there are currently no usable build, but we are pushing hard to get Cassidy released.
+
+## The authors
+- @anapple96 - Co-founder and lead developer of the project.
+- @nguyenphuminh - Co-founder of the project.
+
+## Contributing to Cassidy!
+Cassidy is a bulky and complex project, we really appreciate any help in the development process. 
+
 ## Examples
 
-<b>Hello, World!</b>
+<b>A basic Hello, World! program:</b>
 
 ```C#
 class Main {
@@ -21,7 +33,7 @@ class Main {
 }
 ```
 
-<b>Class and OOP system</b>
+<b>Class and OOP system represented by a small game development example:</b>
   
 ```C#
 class Item {
@@ -30,7 +42,7 @@ class Item {
         this.name = name;
     }
 }
-// You can inherit a class like this
+// Inheritance
 class Weapon : Item {
     public float damage;
     public Weapon(float damage, string name) : base(name) {
@@ -38,23 +50,6 @@ class Weapon : Item {
     }
     void dealDamage() {
         console.log(`Your ${name} deals ${damage} damage`)
-    }
-}
-
-class Consumable : Item {
-    public int useTime;
-    public Consumable(int useTime, string name):base(name) {
-        this.useTime = useTime;
-    }
-    void consume() {
-        console.log(`You consumed`)
-    }
-}
-// You can also inherit multiple classes
-class ThrowingWeapon : Consumable,Weapon {
-    public float speed;
-    public ThrowingWeapon(float speed, int useTime, string name, float damage):base(useTime, name, damage) {
-        this.speed = speed;
     }
 }
 ```
