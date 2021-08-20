@@ -15,6 +15,12 @@ Cassidy was originally created as a language that brings the idea of C#, combine
 
 So over all, it aims to bring safety to web projects, while helping teams works together more efficiently through its beautiful object models, and modern features that are missing from Javascript, while remaining Javascript! It's still in development, so there are currently no usable build, but we are pushing hard to get Cassidy released.
 
+## What comes with devkit?
+When the project is finished, you should have access to:
+- A command line interface
+- A compiler
+- Utilities 
+ 
 ## Examples
 
 <b>A basic Hello, World! program:</b>
