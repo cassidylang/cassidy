@@ -1,7 +1,7 @@
 <div align="center">
   <img src="assets/logo.png"/>
   <br/>
-  <b>A programming language with precision</b>
+  <b>A programming language with precision for the web</b>
   <br/>
   <br/>
   <a href="https://github.com/cassidylang/cassidy/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg"/></a>
