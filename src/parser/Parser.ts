@@ -1,4 +1,3 @@
-import { parse } from "path/posix";
 import { ASTNode, BodyBlock, Program, VariableDeclaration,BinaryExpression } from "../ast/AST";
 class Parser {
     constructor() {}
@@ -22,12 +21,9 @@ class Parser {
                 break;
         }
     }
-    /**
-     * Inject built-in library functions into the function stack to avoid duplication
-     */
-    parseLibrary() {
-        Stack.functionStack = Stack.functionStack.concat(Builtins.builtInPrototypeFunction, Builtins.builtInOperatorFunction);
-    }   
+    parseBlock() {
+        this.ptr+=1;
+    } 
     parseTypedObjectDeclaration(type: TokenType) {
         this.ptr+=1;
         let identifier = Lexer.tokens[this.ptr].value;
@@ -57,11 +53,20 @@ class Parser {
         this.lambda = true;
         this.ptr+=1;
         let block = false,
-            param: Param[],
+            param: Param[] = [],
             parsingParam = true;
         while (parsingParam) {
             if (this.isVar(this.nextTokenValue.type)) {
+                let paramType = this.nextTokenValue.type;
                 this.ptr+=1
+                let paramIdentifier = this.nextTokenValue.value;
+                this.ptr+=1;
+                if (this.nextTokenValue.type === TokenType.COMMA) {
+                    param.push({identifier: paramIdentifier, type: paramType})
+                } else if (this.nextTokenValue.type === TokenType.R_PAREN) {
+                    parsingParam = false;
+                    break;
+                }
             }
         }
     }
@@ -70,19 +75,25 @@ class Parser {
     }
     parseIf() {
         this.ptr+=1;
-        this.parseBinaryExpression();
+        let binexpr = this.parseBinaryExpression();
     }
     parseBinaryExpression(): BinaryExpression {
         this.ptr+=1;
-        let parsing = true,isRight = false;
+        let parsing = true,isRight = false,mathexpr = false;
         let right: any, left: any, sign: string = "", current: any = [];
         while (parsing) {
-            if (this.tokens[this.ptr].type === TokenType.L_PAREN) {
-                isRight? right = this.parseBinaryExpression() : left = this.parseBinaryExpression();
-            } else if (this.tokens[this.ptr].type === TokenType.COMPARISON_OPERATOR) {
-                sign = this.tokens[this.ptr].value;
-            } else if (this.tokens[this.ptr].type === TokenType.R_PAREN) {
-                isRight? right = current : left = current;
+            switch (this.tokens[this.ptr].type) {
+                case TokenType.L_PAREN:
+                    isRight? right = this.parseBinaryExpression() : left = this.parseBinaryExpression();
+                    break;
+                case TokenType.COMPARISON_OPERATOR:
+                    sign = this.tokens[this.ptr].value;
+                    break;
+                case TokenType.R_PAREN:
+                    isRight? right = current : left = current;
+                    break;
+                case TokenType.V_INT:
+                    mathexpr = true;
             }
         }
         return {left: left, right: right, sign: sign};

@@ -122,7 +122,7 @@ export class ForStatement extends ASTNode {
 }
 
 export class IfStatement extends ASTNode {
-    constructor(binExpr: BinaryExpression, body: BodyBlock, chain: ElseIfStatement | ElseStatement) {
+    constructor(binExpr: BinaryExpression, body: BodyBlock, chain: IfStatement | ElseStatement) {
         super();
         this.binExpr = binExpr;
         this.body = body;
@@ -130,19 +130,7 @@ export class IfStatement extends ASTNode {
     }
     binExpr: BinaryExpression;
     body: BodyBlock;
-    chain: ElseIfStatement | ElseStatement
-}
-
-export class ElseIfStatement extends ASTNode {
-    constructor(binExpr: BinaryExpression, body: BodyBlock, chain: ElseIfStatement | ElseStatement) {
-        super();
-        this.binExpr = binExpr;
-        this.body = body;
-        this.chain = chain;
-    }
-    binExpr: BinaryExpression;
-    body: BodyBlock;
-    chain: ElseIfStatement | ElseStatement
+    chain: IfStatement | ElseStatement
 }
 
 export class ElseStatement extends ASTNode {

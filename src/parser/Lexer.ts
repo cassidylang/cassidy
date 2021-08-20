@@ -52,7 +52,9 @@ enum TokenType {
     USING,
     NEW,
     VALUE_STRING,
-    FLOAT
+    FLOAT,
+    V_INT,
+    V_BOOL
 }
 interface Token {
     type: TokenType;
@@ -535,7 +537,7 @@ class Lexer {
                 switch (this.tokens[i].value) {
                     case "if":
                         this.tokens[i] = {type:TokenType.IF, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
-                            break;
+                        break;
                     case "else":
                         if (lookahead(i).value === "if") {
                             this.tokens[i] = {type:TokenType.ELSE_IF, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
@@ -543,34 +545,34 @@ class Lexer {
                         } else {
                             this.tokens[i] = {type:TokenType.ELSE, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         }
-                            break;
+                        break;
                     case "int":
                         this.tokens[i] = {type:TokenType.INT, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                             break;
                     case "break":
                         this.tokens[i] = {type: TokenType.BREAK, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
-                            break;
+                        break;
                     case "async":
                         this.tokens[i] = {type:TokenType.ASYNC, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
-                            break;
+                        break;
                     case "await":
                         this.tokens[i] = {type: TokenType.AWAIT, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
-                            break;
+                        break;
                     case "class":
                         this.tokens[i] = {type: TokenType.CLASS, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
-                            break;
+                        break;
                     case "true":
-                        this.tokens[i] = {type: TokenType.BOOL, value:true, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
-                            break;
+                        this.tokens[i] = {type: TokenType.V_BOOL, value:true, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
+                        break;
                     case "false":
-                        this.tokens[i] = {type: TokenType.BOOL, value:false, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
-                            break;
+                        this.tokens[i] = {type: TokenType.V_BOOL, value:false, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
+                        break;
                     case "string":
                         this.tokens[i] = {type: TokenType.STRING, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
-                            break;
+                        break;
                     case "bool":
                         this.tokens[i] = {type: TokenType.BOOL, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
-                            break;
+                        break;
                 }
             }
         }
