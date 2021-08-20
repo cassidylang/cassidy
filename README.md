@@ -9,6 +9,7 @@
   <a href="https://github.com/cassidylang/cassidy/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/cassidylang/cassidy?color=gold"></a>
 </div>
 
+
 ## What is Cassidy?
 Cassidy was originally created as a language that brings the idea of C#, combined with the unique features from Javascript. But over the time, we have realized that the we should bring the core ideology behind it to the web, granting safety and the ability to work with teams easily.
 
@@ -19,8 +20,10 @@ So over all, it aims to bring safety to web projects, while helping teams works 
 <b>A basic Hello, World! program:</b>
 
 ```C#
+// Class-based object oriented programming
 class Main {
     static void Main() {
+        // Compatible with Javascript's API
         console.log("Hello, World!")
     }
 }
@@ -30,7 +33,9 @@ class Main {
   
 ```C#
 class Item {
+    // Property definition
     public string name;
+    // Method definition
     public Item(string name) {
         this.name = name;
     }
@@ -41,6 +46,7 @@ class Weapon : Item {
     public Weapon(float damage, string name) : base(name) {
         this.damage = damage;
     }
+    // Private method
     void dealDamage() {
         console.log(`Your ${name} deals ${damage} damage`)
     }
