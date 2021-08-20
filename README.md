@@ -60,6 +60,6 @@ class ThrowingWeapon : Consumable,Weapon {
 ```
 
 ## Copyrights and License
-Copyrights © 2021 Cassidy
+Copyrights © 2021 The Cassidy Authors
 
 This project is licensed under the GNU GPLv3 License
