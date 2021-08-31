@@ -68,6 +68,8 @@ Cassidy is a bulky and complex project, we really appreciate any help in the dev
 ### Support us!
 You can also support us just by starring the repo and sharing the project with your friends, co-workers, even your boss.
 
+Or check out our other side-projects, like [FreakC Programming Language](https://github.com/FreakC-Foundation/FreakC)
+
 ## The authors
 - anapple96 - Co-founder and lead developer of the project.
 - nguyenphuminh - Co-founder of the project.
