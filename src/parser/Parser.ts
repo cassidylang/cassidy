@@ -99,7 +99,6 @@ class Parser {
         return {left: left, right: right, sign: sign};
     }
     parseArithmeticExpression(expr: string) {
-        RPN.toRPN(expr);
     }
     isVar(type: TokenType) {
         let possibleType = [

@@ -1,59 +1,19 @@
-const MathAssociation = [
-    {name: "l_paren", symbol: "("},
-    {name: "expo", symbol: "**", association: "r"},
-    {name: "rem", symbol: "%", association: "l"},
-    {name: "mod", symbol: "mod", association: "l"},
-    {name: "mult", symbol: "*", association: "l"},
-    {name: "div", symbol: "/", association: "l"},
-    {name: "add", symbol: "+", association: "l"},
-    {name: "min", symbol: "-", association: "l"},
-];
-enum MathPrecedence {
-    exp = 2,
-    rem = 1,
-    mod = 1, 
-    mult = 1,
-    div = 1,
-    add = 0,
-    min = 0,
-    paren = -1
-}
-
-/** Converting infix expression to Reverse Polish Notation (RPN) and back
- * 
+/**
+ * Syntax (BNF):
+ * arithmetic => <expr>(<assign><expr>)
+ * expr => <term>(<+|-><term>)
+ * term => <factor>(<*|/><factor>)
+ * factor => <variable|numeric|return>(<**><variable|numeric|return>)
+ * return => <identifier><lparen><parameter>(<,><parameter>)[]<rparen>
+ * variable => <identifier>
+ * numeric => <int|float>
+ * parameter => <variable>|<value>
+ * value => <string|int|float|bool>
+ * letter => "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+ * synbol => "\"" | "\'" | "\n" | "(" | ")" | "[" | "]" | "{" | "}" | "." | ";" | ":" | "," | "<" | ">" | "\\" | "/" | "?" | "-" | "_" | "=" | "+" | "`" | "~" | "@" | "#" | "$" | "%" | "^" | "&" | "*"
+ * digit => "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+ * int => <digit>[]
+ * float => <digit>[]<.><digit>[]
+ * string => <letter|symbol>[]
+ * function => <public|private|protected|abstract><static><async><type><identifier><lparen><parameter>(<,><parameter>)[]<rparen><lcurly><body><rcurly>
  */
-class RPN {
-    /**
-     * Convert infix math expression to RPN using Dijkstra's shunting-yard algorithm
-     * @param mathExpr Infix Math Expression
-     * @returns RPN
-     */
-    public static toRPN(mathExpr: string): string {
-        let rpnText: string[] = [],
-            stream = mathExpr.split(""),
-            stack: string[] = [],
-            charStack = "";
-        stream.forEach(e => {
-            if (!isNaN(parseInt(e))) {
-                charStack+=e;
-            } else if (isNaN(parseInt(e))) {
-                if (charStack !== "") {
-                    rpnText.push(charStack);
-                    charStack = "";
-                }
-                if (stack === [] && this.isOp(e)) {
-                    stack.push(e);
-                } else charStack += e;
-            }
-        });
-
-        return rpnText.join("");
-    }
-
-    public static getAssociation(sym: string) {
-        return MathAssociation.find(e => e.symbol === sym)?.association;
-    }
-    public static isOp(sym: string) {
-        return MathAssociation.find(e => e.symbol === sym) ? true : false;
-    }
-}
