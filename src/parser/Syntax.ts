@@ -1,9 +1,9 @@
 /**
  * Syntax (BNF):
- * arithmetic => <expr>(<assign><expr>)
- * expr => <term>(<+|-><term>)
+ * arithmetic => <mexpr>(<assign><mexpr>)
+ * mexpr => <term>(<+|-><term>)
  * term => <factor>(<*|/><factor>)
- * factor => <variable|numeric|return>(<**><variable|numeric|return>)
+ * factor => <variable|numeric|return|mexpr>(<**><variable|numeric|return|mexpr>)
  * return => <identifier><lparen><parameter>(<,><parameter>)[]<rparen>
  * variable => <identifier>
  * numeric => <int|float>
