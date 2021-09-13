@@ -1,3 +1,5 @@
+import { BinaryExpression } from "./BinaryExpression";
+
 type varType = "string" | "float" | "boolean" | "int" | "undefined";
 type accessModifier = "immutable" | "public" | "private" | "static" | "protected" | "abstract";
 type fixOperator = "++" | "--";
@@ -27,20 +29,6 @@ export class Variable {
 interface BinaryOperation {
     left: Variable | BinaryExpression | BinaryOperation;
     right: Variable | BinaryExpression | BinaryOperation;
-}
-
-interface Prefix {
-    variable: Variable;
-}
-
-interface Suffix {
-    variable: Variable;
-}
-
-export interface BinaryExpression {
-    left: any;
-    right: any;
-    sign: string;
 }
 
 interface UpdateExpression {
@@ -79,6 +67,12 @@ export class VariableDeclaration extends DataNode {
     right: Variable | any;
 }
 
+export class Empty extends ASTNode {
+    constructor() {
+        super();
+    }
+}
+
 export class BodyBlock extends ASTNode {
     constructor(components: ASTNode[]) {
         super();
@@ -103,7 +97,7 @@ export class WhileStatement extends ASTNode {
         this.binExpr = binExpr;
         this.body = body;
     }
-    binExpr: BinaryExpression;
+    binExpr: BinaryExpression
     body: BodyBlock;
 }
 
