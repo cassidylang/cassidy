@@ -1,9 +1,9 @@
-import { BinaryExpression } from "./BinaryExpression";
+import { Expression,ExpressionList } from "./BinaryExpression";
 
 type varType = "string" | "float" | "boolean" | "int" | "undefined";
 type accessModifier = "immutable" | "public" | "private" | "static" | "protected" | "abstract";
-type fixOperator = "++" | "--";
-type operator = "+=" | "-=" | "*=" | "/=" | fixOperator;
+
+export type Statement = IfStatement | ForStatement | WhileStatement | Empty
 
 interface Parameter {
     item: VariableDeclaration;
@@ -25,18 +25,6 @@ export class Variable {
     value: any;
     type: varType = "undefined";
 }
-
-interface BinaryOperation {
-    left: Variable | BinaryExpression | BinaryOperation;
-    right: Variable | BinaryExpression | BinaryOperation;
-}
-
-interface UpdateExpression {
-    variable: Variable;
-    operator: operator;
-    operatorValue?: varType;
-}
-
 interface VariableAssignment {
     var1: string;
     var2?: string;
@@ -74,11 +62,11 @@ export class Empty extends ASTNode {
 }
 
 export class BodyBlock extends ASTNode {
-    constructor(components: ASTNode[]) {
+    constructor(components: Statement[]) {
         super();
         this.components = components;
     }
-    components: ASTNode[]
+    components: Statement[]
 }
 
 export class FunctionDeclaration extends DataNode {
@@ -92,17 +80,17 @@ export class FunctionDeclaration extends DataNode {
 }
 
 export class WhileStatement extends ASTNode {
-    constructor(binExpr: BinaryExpression, body: BodyBlock) {
+    constructor(binExpr: Expression, body: BodyBlock) {
         super();
         this.binExpr = binExpr;
         this.body = body;
     }
-    binExpr: BinaryExpression
+    binExpr: Expression
     body: BodyBlock;
 }
 
 export class ForStatement extends ASTNode {
-    constructor(varDec: VariableAssignment,binExpr: BinaryExpression,update: UpdateExpression, body: BodyBlock) {
+    constructor(varDec: VariableAssignment,binExpr: Expression,update: ExpressionList, body: BodyBlock) {
         super();
         this.binExpr = binExpr;
         this.varDec = varDec;
@@ -110,30 +98,30 @@ export class ForStatement extends ASTNode {
         this.body = body;
     }
     varDec: VariableAssignment;
-    binExpr: BinaryExpression;
-    update: UpdateExpression;
+    binExpr: Expression;
+    update: ExpressionList;
     body: BodyBlock;
 }
 
 export class IfStatement extends ASTNode {
-    constructor(binExpr: BinaryExpression, body: BodyBlock, chain: IfStatement | ElseStatement) {
+    constructor(expr: Expression, body: BodyBlock, chain: IfStatement[] | ElseStatement[] | Empty) {
         super();
-        this.binExpr = binExpr;
+        this.expr = expr;
         this.body = body;
         this.chain = chain;
     }
-    binExpr: BinaryExpression;
+    expr: Expression;
     body: BodyBlock;
-    chain: IfStatement | ElseStatement
+    chain: IfStatement[] | ElseStatement[] | Empty;
 }
 
 export class ElseStatement extends ASTNode {
-    constructor(binExpr: BinaryExpression, body: BodyBlock) {
+    constructor(binExpr: Expression, body: BodyBlock) {
         super();
         this.binExpr = binExpr;
         this.body = body;
     }
-    binExpr: BinaryExpression;
+    binExpr: Expression;
     body: BodyBlock;
 }
 

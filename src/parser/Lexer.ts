@@ -54,7 +54,9 @@ enum TokenType {
     VALUE_STRING,
     FLOAT,
     V_INT,
-    V_BOOL
+    V_BOOL,
+    IN,
+    INSTANCEOF
 }
 interface Token {
     type: TokenType;

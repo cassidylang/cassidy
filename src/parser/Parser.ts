@@ -1,4 +1,5 @@
-import { ASTNode, BodyBlock, Program, VariableDeclaration, Empty, IfStatement } from "../ast/AST";
+import { ASTNode, BodyBlock, Program, VariableDeclaration, Empty, IfStatement, Statement } from "../ast/AST";
+import { Expression } from "../ast/BinaryExpression";
 class Parser {
     constructor() {}
 
@@ -15,19 +16,32 @@ class Parser {
         }
     }
     parseStatement() {
-        let node: ASTNode = new Empty();
+        let node: Statement = new Empty();
         switch (this.current.type) {
             case TokenType.L_CURLY:
                 node = this.parseBlock();
                 break;
             case TokenType.IF:
-                node
+                node = this.parseIf();
         }
         return node;
     }
     parseIf() {
+        let node:IfStatement = new IfStatement(new Empty, new BodyBlock([]), new Empty());
         this.eat(TokenType.IF);
         this.eat(TokenType.L_PAREN);
+        node.expr = this.parseExpression()
+        this.eat(TokenType.R_PAREN);
+        node.body = this.parseBlock();
+        while (this.current.type === TokenType.ELSE || this.current.type === TokenType.ELSE_IF) {
+            if (this.current.type === TokenType.ELSE) {}
+        }
+        return node;
+        
+    }
+    parseExpression() {
+        let node: Expression = new Empty;
+        return node;
     }
     parseBlock() {
         let node: BodyBlock = new BodyBlock([]);
@@ -37,7 +51,7 @@ class Parser {
         return node;
     }
     parseStatements() {
-        let statements: ASTNode[] = [];
+        let statements: Statement[] = [];
         while (this.parseStatement() != Empty) {
             statements.push(this.parseStatement());
         }
