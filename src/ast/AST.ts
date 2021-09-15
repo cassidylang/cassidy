@@ -1,4 +1,4 @@
-import { Expression,ExpressionList } from "./BinaryExpression";
+import { BinaryExpression,ExpressionList,Child } from "./BinaryExpression";
 
 type varType = "string" | "float" | "boolean" | "int" | "undefined";
 type accessModifier = "immutable" | "public" | "private" | "static" | "protected" | "abstract";
@@ -10,8 +10,17 @@ interface Parameter {
     isOptional: boolean;
 }
 
-interface Literal {
-    value: varType;
+export class Literal {
+    constructor
+    (
+        public value: any
+    ){}
+}
+export class Identifier {
+    constructor
+    (
+        public name: string
+    ){}
 }
 
 export class Variable {
@@ -46,7 +55,11 @@ export class DataNode extends ASTNode {
     type: TokenType;
     identifier: string;
 }
-
+export class Argument extends ASTNode {
+    constructor(
+        public value: any
+    ){super()}
+}
 export class VariableDeclaration extends DataNode {
     constructor(identifier: string, type: TokenType, accessModifier: accessModifier[], right: Variable | any) {
         super(identifier, type, accessModifier);
@@ -80,17 +93,17 @@ export class FunctionDeclaration extends DataNode {
 }
 
 export class WhileStatement extends ASTNode {
-    constructor(binExpr: Expression, body: BodyBlock) {
+    constructor(binExpr: BinaryExpression, body: BodyBlock) {
         super();
         this.binExpr = binExpr;
         this.body = body;
     }
-    binExpr: Expression
+    binExpr: BinaryExpression
     body: BodyBlock;
 }
 
 export class ForStatement extends ASTNode {
-    constructor(varDec: VariableAssignment,binExpr: Expression,update: ExpressionList, body: BodyBlock) {
+    constructor(varDec: VariableAssignment,binExpr: BinaryExpression,update: ExpressionList, body: BodyBlock) {
         super();
         this.binExpr = binExpr;
         this.varDec = varDec;
@@ -98,30 +111,30 @@ export class ForStatement extends ASTNode {
         this.body = body;
     }
     varDec: VariableAssignment;
-    binExpr: Expression;
+    binExpr: BinaryExpression;
     update: ExpressionList;
     body: BodyBlock;
 }
 
 export class IfStatement extends ASTNode {
-    constructor(expr: Expression, body: BodyBlock, chain: IfStatement[] | ElseStatement[] | Empty) {
+    constructor(expr: Child, body: BodyBlock, chain: IfStatement[] | ElseStatement[] | Empty) {
         super();
         this.expr = expr;
         this.body = body;
         this.chain = chain;
     }
-    expr: Expression;
+    expr: Child;
     body: BodyBlock;
     chain: IfStatement[] | ElseStatement[] | Empty;
 }
 
 export class ElseStatement extends ASTNode {
-    constructor(binExpr: Expression, body: BodyBlock) {
+    constructor(binExpr: BinaryExpression, body: BodyBlock) {
         super();
         this.binExpr = binExpr;
         this.body = body;
     }
-    binExpr: Expression;
+    binExpr: BinaryExpression;
     body: BodyBlock;
 }
 
@@ -155,3 +168,23 @@ export class ArrowFunction extends DataNode {
     isBlock: boolean;
 }
 
+export class MemberExpression extends ASTNode {
+    constructor
+    (
+        public obj: Identifier | MemberExpression | ProtoFunctionCallExpression,
+        public property: Identifier
+    ){
+        super();
+    }
+}
+
+export class ProtoFunctionCallExpression extends ASTNode {
+    constructor
+    (
+        public identifier: Identifier,
+        public argument?: Argument[],
+        public callee?: any
+    ){
+        super();
+    }
+}

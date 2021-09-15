@@ -56,7 +56,8 @@ enum TokenType {
     V_INT,
     V_BOOL,
     IN,
-    INSTANCEOF
+    INSTANCEOF,
+    IDENTIFIER
 }
 interface Token {
     type: TokenType;
