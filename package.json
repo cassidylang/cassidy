@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/nguyenphuminh/cassidylang#readme",
   "devDependencies": {
-    "@types/node": "^16.7.11",
+    "@types/node": "^16.9.2",
     "fs": "0.0.1-security",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.3"
   }
 }
