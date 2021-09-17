@@ -1,4 +1,7 @@
 enum TokenType {
+    // Reserved for placeholders
+    EMPTY,
+    // Primitive
     SINGLE_QUOTE,
     DOUBLE_QUOTE,
     ESCAPED_SINGLE_QUOTE,
@@ -57,7 +60,27 @@ enum TokenType {
     V_BOOL,
     IN,
     INSTANCEOF,
-    IDENTIFIER
+    IDENTIFIER,
+    PLUS,
+    MINUS,
+    MULT,
+    DIV,
+    UPLUS,
+    UMINUS,
+    EXPONENT,
+    EQUAL,
+    NOT_EQUAL,
+    LARGER,
+    SMALLER,
+    LOE, // larger or equal
+    SOE, // smaller or equal
+    L_OR,
+    L_AND,
+    L_NOT,
+    B_OR,
+    B_AND,
+    B_XOR,
+    NCO
 }
 interface Token {
     type: TokenType;
