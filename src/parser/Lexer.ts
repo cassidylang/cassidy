@@ -80,7 +80,21 @@ enum TokenType {
     B_OR,
     B_AND,
     B_XOR,
-    NCO
+    NCO,
+    ASSIGN,
+    ADD_ASSIGN,
+    MIN_ASSIGN,
+    MUL_ASSIGN,
+    DIV_ASSIGN,
+    EXPO_ASSIGN,
+    MOD_ASSIGN,
+    REM_ASSIGN,
+    B_OR_ASSIGN,
+    B_AND_ASSIGN,
+    B_XOR_ASSIGN,
+    L_OR_ASSIGN,
+    L_AND_ASSIGN,
+    NCO_ASSIGN,
 }
 interface Token {
     type: TokenType;

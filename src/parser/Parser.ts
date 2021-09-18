@@ -1,9 +1,11 @@
+import { threadId } from "worker_threads";
 import { ASTNode, BodyBlock, Program, VariableDeclaration, Empty, IfStatement, Statement, Literal, Identifier, MemberExpression, ProtoFunctionCallExpression } from "../ast/AST";
 import { BinaryExpression, Child } from "../ast/BinaryExpression";
 //export type parseType = "if" | "statement" | "statements" | "expression";
 export const ComparisonOp = TokenType.EQUAL | TokenType.LARGER | TokenType.SMALLER | TokenType.LOE | TokenType.SOE | TokenType.NOT_EQUAL;
 export const BitwiseOp = TokenType.B_AND | TokenType.B_OR | TokenType.B_XOR;
 export const LogicalOp = TokenType.L_AND | TokenType.L_OR | TokenType.NCO;
+export const AssignmentOp = TokenType.ASSIGN | TokenType.ADD_ASSIGN | TokenType.MIN_ASSIGN | TokenType.MUL_ASSIGN | TokenType.DIV_ASSIGN | TokenType.EXPO_ASSIGN | TokenType.MOD_ASSIGN | TokenType.REM_ASSIGN | TokenType.B_OR_ASSIGN | TokenType.B_AND_ASSIGN | TokenType.B_XOR_ASSIGN | TokenType.L_OR_ASSIGN | TokenType.L_AND_ASSIGN | TokenType.NCO_ASSIGN;
 class Parser {
     constructor() {}
     recursionCall: number = 0;
@@ -53,72 +55,64 @@ class Parser {
             case TokenType.L_PAREN:
                 this.eat(TokenType.L_PAREN);
                 node = this.parseExpression();
-                break;
-            case TokenType.IDENTIFIER:
-                let cNode: Identifier | MemberExpression | ProtoFunctionCallExpression = new Identifier(this.current().value);
-                this.eat(TokenType.IDENTIFIER);
-                while (this.current().type === TokenType.DOT) {
-                    this.eat(TokenType.IDENTIFIER);
-                    this.eat(TokenType.DOT);
-                    if (this.current().type === TokenType.IDENTIFIER) {
-                        if (this.next().type !== TokenType.L_PAREN) {
-                            cNode = new MemberExpression(cNode, new Identifier(this.current().value));
-                            this.eat(TokenType.IDENTIFIER);
-                        } else {
-                            cNode = this.parseMaybePrototypeFunctionCall(cNode);
-                        }
-                    }
-                }
-                while (this.next().type === TokenType.PLUS || this.next().type === TokenType.MINUS) {
-
-                }
+                this.eat(TokenType.R_PAREN);
+            default:
+                node = this.parseAssignment();
+        }
+        return node;
+    }
+    parseAssignment() {
+        let node: Child = this.parseLogical();
+        while (this.current().type === AssignmentOp) {
+            node = new BinaryExpression(node, this.current().type, this.parseLogical());
         }
         return node;
     }
     parseLogical() {
-        let node: BinaryExpression | Literal | Identifier = this.parseBitwise();
+        let node: Child = this.parseBitwise();
         while (this.current().type === LogicalOp) {
             node = new BinaryExpression(node, this.current().type, this.parseBitwise());
         }
         return node;
     }
     parseBitwise() {
-        let node: BinaryExpression | Literal | Identifier = this.parseComparison();
+        let node: Child = this.parseComparison();
         while (this.current().type === BitwiseOp) {
             node = new BinaryExpression(node, this.current().type, this.parseComparison());
         }
         return node;
     }
     parseComparison() {
-        let node: BinaryExpression | Literal | Identifier = this.parseAdd();
+        let node: Child = this.parseAdd();
         while (this.current().type === ComparisonOp) {
             node = new BinaryExpression(node, this.current().type, this.parseAdd());
         }
         return node;
     }
     parseAdd() {
-        let node: BinaryExpression | Literal | Identifier = this.parseMult();
+        let node: Child = this.parseMult();
         while (this.current().type === TokenType.PLUS || this.current().type === TokenType.MINUS) {
             node = new BinaryExpression(node, this.current().type, this.parseMult());
         }
         return node;
     }
     parseMult() {
-        let node: BinaryExpression | Literal | Identifier = this.parseExpo();
+        let node: Child = this.parseExpo();
         while (this.current().type === TokenType.MULT || this.current().type === TokenType.DIV) {
             node = new BinaryExpression(node, this.current().type, this.parseExpo());
         }
         return node;
     }
     parseExpo() {
-        let node: BinaryExpression | Literal | Identifier = this.parseFactor();
+        let node: Child = this.parseFactor();
         while (this.current().type === TokenType.EXPONENT) {
             node = new BinaryExpression(node, TokenType.EXPONENT, this.parseFactor());
         }
         return node
     }
+
     parseFactor() {
-        let node: BinaryExpression | Literal | Identifier = new Literal(0);
+        let node: Child = new Literal(0);
         if (this.current().type === TokenType.L_PAREN) {
             node = this.parseExpression();
         } else if (this.current().type === TokenType.V_INT) {
