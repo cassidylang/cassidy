@@ -66,9 +66,11 @@ class Weapon : Item {
 Cassidy is a bulky and complex project, we really appreciate any help in the development process.
 
 ### Support us!
-You can also support us just by starring the repo and sharing the project with your friends, co-workers, even your boss.
+If you want to help make the project's development faster, please buy us some coffee so that we can work efficiently at night ☕ 
 
-Or check out our other side-projects, like [FreakC Programming Language](https://github.com/FreakC-Foundation/FreakC)
+How? Just send some cryptos to our BEP-20 address: 0x1848Ba922d6eD66D4910176998fF4fa77AEb82D5
+
+We appreciate your support!!!
 
 ## The authors
 - anapple96 - Co-founder and lead developer of the project.
