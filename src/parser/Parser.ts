@@ -35,7 +35,7 @@ class Parser {
         return node;
     }
     parseIf() {
-        let node:IfStatement = new IfStatement(new Literal(0), new BodyBlock([]), new Empty());
+        let node: IfStatement = new IfStatement(new Literal(0), new BodyBlock([]), new Empty());
         this.eat(TokenType.IF);
         this.eat(TokenType.L_PAREN);
         node.expr = this.parseExpression();
@@ -56,17 +56,11 @@ class Parser {
                 this.eat(TokenType.L_PAREN);
                 node = this.parseExpression();
                 this.eat(TokenType.R_PAREN);
-            default:
-                node = this.parseAssignment();
         }
         return node;
     }
-    parseAssignment() {
-        let node: Child = this.parseLogical();
-        while (this.current().type === AssignmentOp) {
-            node = new BinaryExpression(node, this.current().type, this.parseLogical());
-        }
-        return node;
+    parseLeftHandSide() {
+        
     }
     parseLogical() {
         let node: Child = this.parseBitwise();
