@@ -29,12 +29,9 @@ When the project is finished, you should have access to:
 <b>A basic Hello, World! program:</b>
 
 ```C#
-// Class-based object oriented programming
-class Main {
-    static void Main() {
-        // Compatible with Javascript's API
-        console.log("Hello, World!")
-    }
+void main() {
+    // Compatible with Javascript's API
+    console.log("Hello, World!")
 }
 ```
 
