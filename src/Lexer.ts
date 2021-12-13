@@ -1,4 +1,6 @@
-enum TokenType {
+import * as fs from "fs";
+
+export enum TokenType {
     // Reserved for placeholders
     EMPTY,
     // Primitive
@@ -102,16 +104,19 @@ interface Token {
     startCol: number;
     endCol?: number;
     value?: any;
+    raw?: string;
 }
 
-class Lexer {
+export class Lexer {
     constructor() {};
-    public static tokens: Array<Token>;
+    public static tokens: Token[] = [];
     public static buildToken(input: string) {
         let charstream = input.split("");
         let stack = "";
         let lookahead = (n: number) => charstream[n+1];
-        let eat = (t: Token) => this.tokens.push(t);
+        let eat = (t: Token) => {
+            if (t.value!=="")this.tokens.push(t)
+        };
         let col = 1, line = 1
         for (let i = 0; i<charstream.length; i++) {
             let char = charstream[i];
@@ -169,9 +174,10 @@ class Lexer {
                 case "\n":
                     eat({type:TokenType.VALUE, value: stack, line: line, startCol: col, endCol: col + stack.length});
                     stack = "";
+                    line+=1;
+                    col=1;
                     eat({type:TokenType.LINE_FEED,line: line, startCol: col});
-                    col+=1;
-                        break;
+                    break;
                 case "-":
                     if (stack === "-") {
                         eat({type:TokenType.MATH_OPERATOR, value: "--",line: line, startCol: col});
@@ -207,8 +213,7 @@ class Lexer {
                 case "*":
                     if (stack === "*") {
                         if (lookahead(i)==="=") {
-                            eat({type:TokenType.ASSIGNMENT_OPERATOR, value: "**=",line: line, startCol: col});
-                            stack = "";
+                            stack += char;
                         } else {
                             eat({type:TokenType.ASSIGNMENT_OPERATOR, value: "**",line: line, startCol: col});
                             stack = "";
@@ -551,10 +556,21 @@ class Lexer {
                     col+=1;
                         break;
             }
+            if (i===charstream.length-1) {
+                eat({type:TokenType.VALUE, value: stack, line: line, startCol: col, endCol: col + stack.length});
+                stack = "";
+            }
         }
     }
-
-
+    public static stripws() {
+        this.tokens = this.tokens.filter(e=>e.type!==TokenType.WHITESPACE);
+    }
+    public static striplf() {
+        this.tokens = this.tokens.filter(e=>e.type!==TokenType.LINE_FEED);
+    }
+    public static graw() {
+        this.tokens.forEach(e=>e.raw=TokenType[e.type])
+    }
     public static preprocessor() {
         let lookahead = (n:number) => this.tokens[n+1];
         for (let i = 0; i<this.tokens.length; i++) {
@@ -663,10 +679,20 @@ class Lexer {
                 case TokenType.ESCAPED_TEMPLATE_LITERAL:
                     return `\``;
                 case TokenType.TEMPLATE_LITERAL:
-                    return "``";
+                    return "`";
                 case TokenType.WHITESPACE:
                     return " ";
             }
         }
     }
 }
+fs.readFile("fc-compiler.bat",{encoding:"utf-8"} ,async (err,data)=>{
+    Lexer.buildToken(await data);
+    Lexer.stripws();
+    Lexer.striplf();
+    Lexer.preprocessor();
+    Lexer.graw();
+    fs.writeFile("lexed.js", JSON.stringify(Lexer.tokens, null, 4), err=>{
+        if (err) throw err;
+    })
+})

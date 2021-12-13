@@ -1,0 +1,13 @@
+class Contract {
+    string minter, Address receiver;
+    Contract(Message msg, Address receiver) {
+        minter = msg.sender;
+        receiver = receiver
+    }
+    mint(uint amount) {
+        receiver.balance += amount;
+    }
+}
+int main() {
+    let Contract = new Contract(msg, addr)
+}
