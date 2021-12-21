@@ -1,6 +1,7 @@
 export enum ErrorCode {
     TypeError = 1000,
     Reserved,
+    SyntaxError
 }
 interface ErrorForm {
     name: string,
@@ -9,6 +10,6 @@ interface ErrorForm {
 }
 export class ErrorC {
     public static throwErr(code: ErrorCode, form: ErrorForm) {
-
+        console.log("Err "+code)
     }
 }

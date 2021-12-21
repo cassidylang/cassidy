@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { Parser } from "./Parser";
 
 export enum TokenType {
     // Reserved for placeholders
@@ -97,7 +98,9 @@ export enum TokenType {
     L_OR_ASSIGN,
     L_AND_ASSIGN,
     NCO_ASSIGN,
+    RETURN
 }
+export const ValueType = [TokenType.VALUE,TokenType.VALUE_STRING,TokenType.V_BOOL,TokenType.V_INT];
 interface Token {
     type: TokenType;
     line: number
@@ -576,18 +579,19 @@ export class Lexer {
         for (let i = 0; i<this.tokens.length; i++) {
             if (this.tokens[i].type === TokenType.DOUBLE_QUOTE) {
                 let out = this.crawl(i, TokenType.DOUBLE_QUOTE);
-                let length = out[0];
-                this.tokens.splice(i+1, length);
+                let length = out[0]-i;
+                console.log(this.tokens.splice(i+1, length));
                 this.tokens[i] = {type: TokenType.VALUE_STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
             } else if (this.tokens[i].type === TokenType.SINGLE_QUOTE) {
                 let out = this.crawl(i, TokenType.SINGLE_QUOTE);
-                let length = out[0];
-                this.tokens.splice(i+1, length);
+                let length = out[0]-i;
+                this.tokens.splice(i, length+1);
+                console.log("asdasd",this.tokens)
                 this.tokens[i] = {type: TokenType.VALUE_STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
             } else if (this.tokens[i].type === TokenType.TEMPLATE_LITERAL) {
                 let out = this.crawl(i, TokenType.TEMPLATE_LITERAL);
-                let length = out[0];
-                this.tokens.splice(i+1, length);
+                let length = out[0]-i;
+                this.tokens.splice(i, length+1);
                 this.tokens[i] = {type: TokenType.TEMPLATE_STRING, value: out[1], line: this.tokens[i].line, startCol: this.tokens[i].startCol}
             } else if (this.tokens[i].type === TokenType.VALUE) {
                 switch (this.tokens[i].value) {
@@ -629,6 +633,17 @@ export class Lexer {
                     case "bool":
                         this.tokens[i] = {type: TokenType.BOOL, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                         break;
+                    case "return":
+                        this.tokens[i] = {type: TokenType.RETURN, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
+                        break;
+                }
+                if (/^[0-9]+$/g.test(this.tokens[i].value)) {
+                    this.tokens[i] = {type: TokenType.V_INT, value:Number(this.tokens[i].value), line: this.tokens[i].line, startCol: this.tokens[i].startCol};
+                }
+            } else if (this.tokens[i].type === TokenType.ASSIGNMENT_OPERATOR) {
+                switch (this.tokens[i].value) {
+                    case "=":
+                        this.tokens[i] = {type: TokenType.ASSIGN, line: this.tokens[i].line, startCol: this.tokens[i].startCol};
                 }
             }
         }
@@ -686,13 +701,22 @@ export class Lexer {
         }
     }
 }
-fs.readFile("fc-compiler.bat",{encoding:"utf-8"} ,async (err,data)=>{
-    Lexer.buildToken(await data);
-    Lexer.stripws();
-    Lexer.striplf();
-    Lexer.preprocessor();
-    Lexer.graw();
-    fs.writeFile("lexed.js", JSON.stringify(Lexer.tokens, null, 4), err=>{
-        if (err) throw err;
-    })
-})
+
+Lexer.buildToken(`
+int a(int b) {
+    return a(b);
+}
+int main() {
+    bool a = true;
+    a(710);
+}`);
+Lexer.stripws();
+console.log(Lexer.tokens);
+Lexer.striplf();
+console.log(Lexer.tokens);
+Lexer.preprocessor();
+console.log(Lexer.tokens);
+Lexer.graw();
+console.log(Lexer.tokens);
+let parser = new Parser();
+console.log(JSON.stringify(parser.parseStatements(),null,4))
