@@ -1,4 +1,4 @@
-import { FunctionCall, FunctionDeclaration, Program, ReferenceCall, Statement, VariableDeclaration } from "./NodeType";
+import { Access, FunctionCall, FunctionDeclaration, ObjectReference, Program, ReferenceCall, Return, Statement, VariableDeclaration } from "./NodeType";
 import { TokenType, ValueType } from "./Lexer";
 import { API } from "./API";
 function getIndent(count: number) {
@@ -6,30 +6,24 @@ function getIndent(count: number) {
 }
 class Codegen {
     code: string = "\"use strict\"";
-    functionStack: FunctionDeclaration[] = [];
-    varStack: VariableDeclaration[] = [];
     build(program: Program) {
         if (!program.statements.find(e=>e.constructor.name)) {
             throw new Error("Can't entry due to missing main")
         }
         program.statements.forEach(e=>{
-            if (e.constructor.name === "FunctionDeclaration") {
-                this.functionStack.push(e as FunctionDeclaration);
-            } else if (e.constructor.name === "VariableDeclaration") {
-                this.varStack.push(e as VariableDeclaration);
-            }
-        })
-        program.statements.forEach(e=>{
             switch (e.constructor.name) {
                 case "FunctionDeclaration":
-                    this.code+=this.buildFunctionDeclaration(e as FunctionDeclaration, this.functionStack, this.varStack);
+                    this.code+=this.buildFunctionDeclaration(e as FunctionDeclaration);
+                    break;
+                case "VariableDeclaration":
+                    this.code+=this.buildVarDeclaration(e as VariableDeclaration);
                     break;
             }
         });
         this.code+="\nmain()";
     }
-    buildFunctionDeclaration(statement: FunctionDeclaration, kfunction: FunctionDeclaration[], kvar: VariableDeclaration[], indent = 0) {
-        let returnType: TokenType, localfunction: FunctionDeclaration[] = [], localvar: VariableDeclaration[] = [],
+    buildFunctionDeclaration(statement: FunctionDeclaration, indent = 0) {
+        let returnType: TokenType,
             currentIndent = getIndent(indent), lcode = ""
         switch (statement.type) {
             case TokenType.INT:
@@ -41,13 +35,6 @@ class Codegen {
             default:
                 throw new Error("Bad type");
         }
-        statement.body.statements.forEach(e=>{
-            if (e.constructor.name === "FunctionDeclaration") {
-                localfunction.push(e as FunctionDeclaration);
-            } else if (e.constructor.name === "VariableDeclaration") {
-                localvar.push(e as VariableDeclaration);
-            }
-        })
         if ((!statement.body.statements.find(e=>e.constructor.name === "Return")) && returnType!==TokenType.VOID) {
             throw new Error("No return statement");
         }
@@ -58,20 +45,32 @@ class Codegen {
         statement.body.statements.forEach(e=>{
             switch (e.constructor.name) {
                 case "FunctionDeclaration":
-                    lcode+=this.buildFunctionDeclaration(e as FunctionDeclaration, [...kfunction,...localfunction], [...kvar,...localvar],indent+1);
+                    lcode+=this.buildFunctionDeclaration(e as FunctionDeclaration,indent+1);
+                    break;
+                case "Access":
+                case "FunctionCall":
+                case "ObjectReference":
+                    lcode+="\n"+"    "+currentIndent+this.buildReference(e);
+                    break;
+                case "VariableDeclaration":
+                    lcode+="\n"+"    "+currentIndent+this.buildVarDeclaration(e as VariableDeclaration);
+                    break;
+                case "Return":
+                    lcode+="\n"+"    "+currentIndent+this.buildReturn(e as Return);
                     break;
             }
         });
         return lcode;
     }
-    buildArgs(statement: FunctionDeclaration, kfunction: FunctionDeclaration[], kvar: VariableDeclaration[]) {
-        let lcode = "";
+    buildArgs(statement: FunctionDeclaration) {
+        let lcode: string[] = [];
         statement.parameters.forEach(e=>{
-            
-        })
+            lcode.push(e.identifier);
+        });
+        return lcode.join(",");
     }
-    buildVarDeclaration(statement: VariableDeclaration, kfunction: FunctionDeclaration[], kvar: VariableDeclaration[], indent = 0) {
-        let type: TokenType, cIndent = getIndent(indent);
+    buildVarDeclaration(statement: VariableDeclaration) {
+        let type: TokenType, cIndent = "";
         switch (statement.type) {
             case TokenType.INT:
             case TokenType.STRING:
@@ -101,22 +100,32 @@ class Codegen {
                     throw new Error("Bad type");
                 }
             case "object":
-                let val = this.buildReference(statement.value, kfunction, kvar);
+                let val = this.buildReference(statement.value);
                 return `${cIndent}let ${statement.identifier} = ${statement.value}`
             default:
-
+                throw new Error("Bad type");
         }
     }
-    buildReference(statement: ReferenceCall, kfunction: FunctionDeclaration[], kvar: VariableDeclaration[]) {
+    buildReference(statement: ReferenceCall): string {
         switch(statement.constructor.name) {
             case "FunctionCall":
                 let name: string = (statement as FunctionCall).identifier
-                if (API.api[name]) {
-                    
-                }
-                break;
-            case "":
-                break;
+                return `${name}(${(statement as FunctionCall).args.join(",")})`;
+            case "Access":
+                let left = this.buildReference((statement as Access).left),
+                    right = this.buildReference((statement as Access).right);
+                return `${left}.${right}`;
+            case "ObjectReference":
+                return (statement as ObjectReference).identifier;
+            default:
+                return "";
+        }
+    }
+    buildReturn(statement: Return) {
+        if (typeof statement.value === "object") {
+            return `return ${this.buildReference(statement.value)}`
+        } else {
+            return `return ${statement.value}`
         }
     }
 }

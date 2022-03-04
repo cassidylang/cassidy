@@ -301,6 +301,7 @@ export class Parser {
             case TokenType.V_BOOL:
             case TokenType.V_INT:
                 node = new Return(this.current().value);
+                break;
         }
         this.eat(TokenType.SEMICOLON)
         return node;

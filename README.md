@@ -62,20 +62,6 @@ class Weapon : Item {
 ## Contributing to Cassidy!
 Cassidy is a bulky and complex project, we really appreciate any help in the development process.
 
-### Support us!
-If you want to help make the project's development faster, please buy us some coffee so that we can work efficiently at night ☕ 
-
-How? Just send some cryptos to our BEP-20 address: 
-
-- nguyenphuminh's address : 0x1848Ba922d6eD66D4910176998fF4fa77AEb82D5
-- anapple96's address : 0xA41425BAA7286Bf6C69f2C1F9723d5BAeB8fE891
-
-We appreciate your support!!!
-
-## The authors
-- anapple96 - Co-founder and lead developer of the project.
-- nguyenphuminh - Co-founder of the project.
-
 ## Copyrights and License
 Copyrights © 2021 The Cassidy Authors
 

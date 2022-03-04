@@ -4,7 +4,9 @@ export namespace API {
         [Key: string]: T;
     }
     export let api: Dictionary<any> = {
-        "console.log": {type: TokenType.VOID, args: [TokenType.VALUE_STRING]},
-        "eval": {type: TokenType.VOID, args: [TokenType.VALUE_STRING]},
+        "console": {
+            "log": {type: "function", argtype: [TokenType.STRING], return: TokenType.VOID}
+        },
+        "eval": {argtype: [TokenType.STRING], return: TokenType.VOID}
     }; 
 }

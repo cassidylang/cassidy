@@ -52,6 +52,7 @@ export class FunctionCall extends ASTNode {
     ) {super()}
 }
 
+
 export class ObjectReference extends ASTNode {
     constructor(
         public identifier: string
