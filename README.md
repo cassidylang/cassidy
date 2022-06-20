@@ -12,55 +12,7 @@
   <a href="https://github.com/cassidylang/cassidy"><img src="https://img.shields.io/github/repo-size/cassidylang/cassidy"/></a>
 </div>
 
-
-## What is Cassidy?
-Cassidy was originally created as a language that brings the idea of C#, combined with the unique features from Javascript. But over the time, we have realized that the we should bring the core ideology behind it to the web, granting safety and the ability to work with teams easily.
-
-So overall, it aims to bring safety to web projects, while helping teams works together more efficiently through its beautiful object models, and modern features that are missing from Javascript, while remaining Javascript! It's still in development, so there are currently no usable build, but we are pushing hard to get Cassidy released.
-
-## What comes with devkit?
-When the project is finished, you should have access to:
-- A command line interface
-- A compiler
-- Utilities 
- 
-## Examples
-
-<b>A basic Hello, World! program:</b>
-
-```C#
-void main() {
-    // Compatible with Javascript's API
-    console.log("Hello, World!")
-}
-```
-
-<b>Class and OOP system represented by a small game development example:</b>
-  
-```C#
-class Item {
-    // Property definition
-    public string name;
-    // Method definition
-    public Item(string name) {
-        this.name = name;
-    }
-}
-// Inheritance
-class Weapon : Item {
-    public float damage;
-    public Weapon(float damage, string name) : base(name) {
-        this.damage = damage;
-    }
-    // Private method
-    void dealDamage() {
-        console.log(`Your ${name} deals ${damage} damage`)
-    }
-}
-```
-
-## Contributing to Cassidy!
-Cassidy is a bulky and complex project, we really appreciate any help in the development process.
+A language that tries to copy everything
 
 ## Copyrights and License
 Copyrights © 2021 The Cassidy Authors

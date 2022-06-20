@@ -41,9 +41,7 @@ export class Parser {
     parseStatements() {
         let parsing = true, statements = [];
         while (parsing) {
-            //console.log("p1");
             let node = this.parseStatement();
-            //console.log(node)
             if (node.constructor.name==="Empty") {
                 parsing = false;
                 break;
@@ -103,7 +101,6 @@ export class Parser {
                         this.eat(TokenType.COMMA)
                         let parsing = true;
                         while (parsing) {
-                            //console.log("p2");
                             if (this.current().type === TokenType.VALUE) {
                                 let vident = (this.current().value as string);
                                 console.log(this.current());
@@ -138,7 +135,6 @@ export class Parser {
                 this.eat(TokenType.COMMA)
                 let parsing = true;
                 while (parsing) {
-                    //console.log("p2");
                     if (this.current().type === TokenType.VALUE) {
                         let vident = (this.current().value as string);
                         this.eat(TokenType.VALUE)
@@ -167,7 +163,7 @@ export class Parser {
             let err = this.current();
             ErrorC.throwErr(ErrorCode.Reserved, {name: Lexer.getTokenRaw(err), col:err.startCol, line:err.line})
         }
-        if (nodet === TokenType.VOID&&node.constructor.name!=="FunctionDeclaration") {
+        if (nodet === TokenType.VOID && node.constructor.name !== "FunctionDeclaration") {
             throw new Error("Bad void var")
         } 
         return node;
@@ -177,7 +173,6 @@ export class Parser {
             parsing = true,
             onstack = false;
             while (parsing) {
-                console.log("123456789")
                 if (this.current().type === TokenType.VALUE) {
                     let identifier = this.current().value;
                     this.eat(TokenType.VALUE);
@@ -185,7 +180,6 @@ export class Parser {
                         this.eat(TokenType.L_PAREN);
                         let checking = true, args = [], instack = false;
                         while (checking) {
-                            console.log("987654321")
                             if (ValueType.includes(this.current().type)) {
                                 args.push(this.current().value);
                                 this.eat(this.current().type)
@@ -306,4 +300,7 @@ export class Parser {
         this.eat(TokenType.SEMICOLON)
         return node;
     }
+    /**
+     * Expression parser
+     */
 }
